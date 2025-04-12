@@ -76,13 +76,13 @@ const Home = () => {
           </div>
           <div className="step">
             <div className="step-number">3</div>
-            <h3>Make Payment</h3>
-            <p>Pay directly to the interviewer using UPI by scanning their QR code.</p>
+            <h3>Attend & Improve</h3>
+            <p>Participate in the mock interview and receive valuable feedback.</p>            
           </div>
           <div className="step">
             <div className="step-number">4</div>
-            <h3>Attend & Improve</h3>
-            <p>Participate in the mock interview and receive valuable feedback.</p>
+            <h3>Make Payment</h3>
+            <p>Pay directly to the interviewer using UPI by scanning their QR code.</p>
           </div>
         </div>
       </section>
