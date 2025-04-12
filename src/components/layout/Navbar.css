@@ -1,0 +1,219 @@
+/* Navbar.css */
+.navbar {
+  background-color:#333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1rem 1rem;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 98%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none !important;
+  color: rgb(204, 204, 204);
+  z-index: 1001;
+
+  &.active {
+    color: rgb(204, 204, 204);
+  }
+
+  .text {
+    font-size: 1.25rem;
+    font-family: "PT Serif", serif;
+    font-weight: 100;
+    text-decoration: none !important;
+  }
+}
+
+.navbar-logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.navbar-brand span {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+}
+
+.user-info-mobile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: rgb(204, 204, 204);
+}
+
+/* Menu toggle button for mobile */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.hamburger {
+  display: block;
+  position: relative;
+  width: 24px;
+  height: 2px;
+  background-color: #cccccc;
+  transition: all 0.3s ease-in-out;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background-color: #cccccc;
+  transition: all 0.3s ease-in-out;
+}
+
+.hamburger::before {
+  transform: translateY(-8px);
+}
+
+.hamburger::after {
+  transform: translateY(8px);
+}
+
+.hamburger.open {
+  background-color: transparent;
+}
+
+.hamburger.open::before {
+  transform: rotate(45deg);
+}
+
+.hamburger.open::after {
+  transform: rotate(-45deg);
+}
+
+/* Overlay for mobile menu */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-link {
+  color: rgb(204, 204, 204);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #cccccc;
+}
+
+.admin-link {
+  background-color: #009688;
+  color: rgb(204, 204, 204);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.admin-link:hover {
+  background-color: #00796b;
+}
+
+.logout-button {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: rgb(204, 204, 204);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: inherit;
+}
+
+.logout-button:hover {
+  background-color:  rgba(255, 0, 0, 0.5);
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100vh;
+    background-color: #333;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 60px 20px 20px;
+    z-index: 1000;
+    transition: right 0.3s ease-in-out;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .nav-links.open {
+    right: 0;
+  }
+
+  .nav-link {
+    padding: 15px 0;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .overlay {
+    display: block;
+  }
+
+  .user-name {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

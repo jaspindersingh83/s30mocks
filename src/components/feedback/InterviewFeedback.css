@@ -1,0 +1,207 @@
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.feedback-modal {
+  background-color: #1a1a2e;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.feedback-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #2a2a3a;
+}
+
+.feedback-modal-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.feedback-modal-body {
+  padding: 20px;
+}
+
+/* Form styles */
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #ddd;
+}
+
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #222;
+  color: #fff;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #222;
+  color: #fff;
+  resize: vertical;
+}
+
+/* Feedback display styles */
+.feedback-scores {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.feedback-score-item {
+  text-align: center;
+  flex: 1;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #1f1f1f;
+}
+
+.feedback-score-item h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #ddd;
+}
+
+.score-display {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1890ff;
+}
+
+.feedback-section {
+  margin-bottom: 20px;
+}
+
+.feedback-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #ddd;
+}
+
+.feedback-section p {
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #bbb;
+}
+
+/* Rating styles */
+.star-rating {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.star {
+  font-size: 30px;
+  color: #555;
+  cursor: pointer;
+  margin: 0 5px;
+  transition: color 0.2s;
+}
+
+.star:hover,
+.star.selected {
+  color: #f8d64e;
+}
+
+/* Button styles */
+.feedback-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.feedback-modal-actions button {
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+  font-size: 14px;
+  line-height: 1.5;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.feedback-modal-actions .btn-primary {
+  background-color: #1890ff;
+  color: white;
+}
+
+.feedback-modal-actions .btn-primary:hover {
+  background-color: #40a9ff;
+}
+
+.feedback-modal-actions .btn-secondary {
+  background-color: #333;
+  color: white;
+}
+
+.feedback-modal-actions .btn-secondary:hover {
+  background-color: #444;
+}
+
+.feedback-modal-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

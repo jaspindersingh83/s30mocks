@@ -1,0 +1,260 @@
+.problem-details-container {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.problem-header {
+  padding: 20px;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.problem-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.problem-metadata {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.difficulty-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.difficulty-easy {
+  background-color: var(--success-light);
+  color: var(--success-dark);
+}
+
+.difficulty-medium {
+  background-color: var(--warning-light);
+  color: var(--warning-dark);
+}
+
+.difficulty-hard {
+  background-color: var(--danger-light);
+  color: var(--danger-dark);
+}
+
+.problem-tabs {
+  display: flex;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+
+.tab-button {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.tab-button:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+.tab-button.active {
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  background-color: var(--bg-hover);
+}
+
+.leetcode-link, .video-link {
+  padding: 12px 20px;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.leetcode-link:hover, .video-link:hover {
+  background-color: var(--bg-hover);
+  text-decoration: underline;
+}
+
+.problem-content {
+  padding: 20px;
+  background-color: var(--bg-secondary);
+}
+
+.problem-description {
+  margin-bottom: 20px;
+}
+
+.leetcode-iframe-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 75%;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.leetcode-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.problem-hints {
+  margin-bottom: 20px;
+}
+
+.problem-hints h4 {
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+
+.hints-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hint-item {
+  padding: 12px 16px;
+  background-color: var(--bg-primary);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+  border-left: 3px solid var(--primary);
+}
+
+.problem-solutions h4 {
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+
+.solution-language-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.language-tab {
+  padding: 8px 16px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.language-tab:hover {
+  background-color: var(--bg-hover);
+}
+
+.language-tab.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.active-solution {
+  background-color: var(--bg-primary);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+}
+
+.solution-description {
+  margin-bottom: 20px;
+}
+
+.solution-description h5 {
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.solution-description p {
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.solution-complexity {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.complexity-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 14px;
+  border: 1px solid var(--border-color);
+}
+
+.solution-code {
+  margin-bottom: 10px;
+}
+
+.solution-code h5 {
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.code-block {
+  background-color: var(--bg-secondary);
+  border-radius: 6px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: monospace;
+  line-height: 1.5;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  white-space: pre-wrap;
+}
+
+.no-problem {
+  padding: 30px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .problem-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-button, .leetcode-link, .video-link {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+  
+  .solution-complexity {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

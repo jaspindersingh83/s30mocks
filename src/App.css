@@ -1,5 +1,18 @@
+:root {
+  --primary-color: #009688;
+  --primary-hover: #00796b;
+  --background-color: #333;
+  --app-background: #444;
+  --text-color: rgb(204, 204, 204);
+  --text-secondary: rgb(180, 180, 180);
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .App {
   text-align: center;
+  background-color: var(--app-background);
+  min-height: 100vh;
+  color: var(--text-color);
 }
 
 .App-logo {
@@ -21,7 +34,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(204, 204, 204);
 }
 
 .App-link {
@@ -35,4 +48,37 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Global Styles */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+
+button, .btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover, .btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }

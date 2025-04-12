@@ -1,0 +1,215 @@
+.problem-library-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.problem-library-container h1 {
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.problem-library-layout {
+  display: flex;
+  gap: 20px;
+  height: calc(100vh - 200px);
+  min-height: 600px;
+}
+
+.problem-sidebar {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.problem-filters {
+  padding: 16px;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filter-group {
+  margin-bottom: 12px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.filter-group select,
+.filter-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.problems-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.problem-item {
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background-color: var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.problem-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.problem-item.active {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.problem-item-title {
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.problem-item-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.solutions-count {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.problem-main-content {
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loading-problems,
+.loading-problem,
+.no-problems,
+.no-problem-selected,
+.error-message {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.loading-problems,
+.loading-problem {
+  color: var(--text-secondary);
+}
+
+.error-message {
+  color: var(--danger);
+}
+
+.no-problem-selected {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.no-problem-selected h3 {
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.no-problem-selected p {
+  color: var(--text-secondary);
+}
+
+.not-authenticated {
+  text-align: center;
+  padding: 40px;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  max-width: 500px;
+}
+
+.not-authenticated h2 {
+  color: var(--danger);
+  margin-bottom: 20px;
+}
+
+.not-authenticated p {
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.login-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.login-link:hover {
+  background-color: var(--primary-dark);
+}
+
+.difficulty-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.difficulty-easy {
+  background-color: var(--success-light);
+  color: var(--success-dark);
+}
+
+.difficulty-medium {
+  background-color: var(--warning-light);
+  color: var(--warning-dark);
+}
+
+.difficulty-hard {
+  background-color: var(--danger-light);
+  color: var(--danger-dark);
+}
+
+@media (max-width: 768px) {
+  .problem-library-layout {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .problem-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .problems-list {
+    max-height: 300px;
+  }
+}

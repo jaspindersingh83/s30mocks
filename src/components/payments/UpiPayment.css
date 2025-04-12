@@ -1,0 +1,225 @@
+.upi-payment-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 25px;
+  background-color: var(--app-background);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  color: var(--text-color);
+}
+
+.upi-payment-container h2 {
+  color: var(--text-color);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.upi-payment-loading,
+.upi-payment-error {
+  text-align: center;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.upi-payment-loading {
+  color: var(--text-secondary);
+}
+
+.upi-payment-error {
+  color: #d9534f;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+.payment-status {
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.payment-status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.payment-status.submitted {
+  background-color: #cce5ff;
+  color: #004085;
+  border: 1px solid #b8daff;
+}
+
+.payment-status.verified {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.payment-status.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.payment-details {
+  background-color: var(--background-color);
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.payment-details p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.qr-code-section {
+  text-align: center;
+  margin: 25px 0;
+}
+
+.qr-code-section h3 {
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.qr-code-image {
+  max-width: 250px;
+  max-height: 250px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: white;
+}
+
+.payment-instruction {
+  margin-top: 15px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.payment-proof-form {
+  margin-top: 30px;
+  border-top: 1px solid #555;
+  padding-top: 20px;
+}
+
+.payment-proof-form h3 {
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.form-group input[type="file"] {
+  width: 100%;
+  padding: 8px 0;
+}
+
+.file-info {
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.screenshot-preview {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.screenshot-preview h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.screenshot-preview img {
+  max-width: 300px;
+  max-height: 300px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.submit-button:disabled {
+  background-color: #a0c3e8;
+  cursor: not-allowed;
+}
+
+.verification-pending {
+  text-align: center;
+  padding: 20px;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.verification-pending h3 {
+  color: var(--text-color);
+  margin-bottom: 10px;
+}
+
+.verification-pending p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.message {
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
