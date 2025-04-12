@@ -36,7 +36,7 @@ import WhatsAppChat from './components/common/WhatsAppChat';
 import './App.css';
 
 // Set up axios defaults
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+axios.defaults.baseURL = 'https://s30mocksbackend-f6889ae95b53.herokuapp.com';
 axios.defaults.withCredentials = true;
 
 // Auth guard component for protected routes
