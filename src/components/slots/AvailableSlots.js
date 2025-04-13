@@ -214,7 +214,7 @@ const AvailableSlots = () => {
           />
         </div>
 
-        {/* {!isCandidate && (
+        {!isCandidate && (
           <div className="filter-group">
             <label htmlFor="interviewerFilter">Filter by Interviewer:</label>
             <select
@@ -223,7 +223,7 @@ const AvailableSlots = () => {
               onChange={(e) => setSelectedInterviewer(e.target.value)}
             >
               <option value="">All Interviewers</option>
-              {interviewers.map(interviewer => (
+              {interviewers.map((interviewer) => (
                 <option key={interviewer.id} value={interviewer.id}>
                   {interviewer.name}
                 </option>
@@ -231,7 +231,7 @@ const AvailableSlots = () => {
             </select>
           </div>
         )}
-         */}
+
         <div className="filter-group">
           <label htmlFor="typeFilter">Filter by Interview Type:</label>
           <select
@@ -289,46 +289,36 @@ const AvailableSlots = () => {
                         <strong>End:</strong> {formatDate(slot.endTime)}
                       </div>
                     </div>
-                    {isCandidate ? (
-                      <div className="slot-type" data-type={slot.interviewType}>
-                        <strong>Interview:</strong> {slot.interviewType} (
-                        {slot.interviewType === "DSA"
-                          ? "40 minutes"
-                          : "50 minutes"}
-                        )
+                    <div className="slot-type" data-type={slot.interviewType}>
+                      <strong>Interview:</strong> {slot.interviewType} (
+                      {slot.interviewType === "DSA"
+                        ? "40 minutes"
+                        : "50 minutes"}
+                      )
+                    </div>
+
+                    <div className="interviewer-info">
+                      <strong>Interviewer:</strong> {slot.interviewer.name}
+                      <div className="interviewer-rating">
+                        {renderRating(
+                          slot.interviewer.averageRating ||
+                            interviewerRatings[slot.interviewer._id]
+                              ?.averageRating ||
+                            0
+                        )}
+                        <span className="rating-count">
+                          {slot.interviewer.ratingsCount ||
+                            interviewerRatings[slot.interviewer._id]?.count ||
+                            0}{" "}
+                          {(slot.interviewer.ratingsCount ||
+                            interviewerRatings[slot.interviewer._id]?.count ||
+                            0) === 1
+                            ? "review"
+                            : "reviews"}
+                        </span>
                       </div>
-                    ) : (
-                      <div className="interviewer-info">
-                        <strong>Interviewer:</strong> {slot.interviewer.name}
-                        <div className="interviewer-rating">
-                          {renderRating(
-                            slot.interviewer.averageRating ||
-                              interviewerRatings[slot.interviewer._id]
-                                ?.averageRating ||
-                              0
-                          )}
-                          <span className="rating-count">
-                            {slot.interviewer.ratingsCount ||
-                              interviewerRatings[slot.interviewer._id]?.count ||
-                              0}{" "}
-                            {(slot.interviewer.ratingsCount ||
-                              interviewerRatings[slot.interviewer._id]?.count ||
-                              0) === 1
-                              ? "review"
-                              : "reviews"}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {!isCandidate && (
-                      <div className="slot-type" data-type={slot.interviewType}>
-                        <strong>Type:</strong> {slot.interviewType} (
-                        {slot.interviewType === "DSA"
-                          ? "40 minutes"
-                          : "50 minutes"}
-                        )
-                      </div>
-                    )}
+                    </div>
+
                     <div className="slot-duration">
                       <strong>Duration:</strong>{" "}
                       {Math.round(
