@@ -83,24 +83,19 @@ const PriceManagement = () => {
               <thead>
                 <tr>
                   <th>Interview Type</th>
-                  <th>Base Price</th>
-                  <th>GST (18%)</th>
-                  <th>Total Price</th>
+                  <th>Price</th>
                   <th>Currency</th>
                   <th>Last Updated</th>
                 </tr>
               </thead>
               <tbody>
                 {prices.map((price) => {
-                  const gstAmount = parseFloat((price.price * 0.18).toFixed(2));
-                  const totalPrice = parseFloat((price.price + gstAmount).toFixed(2));
+                  // No GST calculation needed
                   return (
                     <tr key={price._id}>
                       <td>{price.interviewType}</td>
                       <td>{price.price}</td>
-                      <td>{gstAmount}</td>
-                      <td><strong>{price.price} {price.currency} + 18% GST</strong></td>
-                      <td>{price.currency}</td>
+                      <td>{price.currency || 'INR'}</td>
                       <td>{new Date(price.updatedAt).toLocaleString()}</td>
                     </tr>
                   );
@@ -128,14 +123,14 @@ const PriceManagement = () => {
             </div>
             
             <div className="form-group">
-              <label htmlFor="price">Base Price (excluding GST)</label>
+              <label htmlFor="price">Price</label>
               <input
                 type="number"
                 id="price"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                placeholder="Enter base price (GST will be added)"
+                placeholder="Enter price"
                 min="0"
                 step="0.01"
                 required

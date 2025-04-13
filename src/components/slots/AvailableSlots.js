@@ -278,7 +278,7 @@ const AvailableSlots = () => {
                     <div className="slot-price">
                       <strong>Price:</strong> {(() => {
                         const basePrice = slot.price;
-                        return `${basePrice} ${slot.currency || 'INR'} + 18% GST`;
+                        return `${basePrice} ${slot.currency || 'INR'}`;
                       })()}
                     </div>
                     {isCandidate && (

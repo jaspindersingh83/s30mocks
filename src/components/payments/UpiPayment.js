@@ -212,11 +212,9 @@ const UpiPayment = ({ onPaymentComplete }) => {
       )}
       
       <div className="payment-details">
-        {payment.basePrice ? (
+        {payment.amount ? (
           <>
-            <p><strong>Base Price:</strong> ₹{payment.basePrice}</p>
-            <p><strong>GST (18%):</strong> ₹{payment.gstAmount}</p>
-            <p><strong>Total Amount:</strong> ₹{payment.basePrice} + 18% GST = ₹{payment.amount}</p>
+            <p><strong>Amount:</strong> {payment.currency || '₹'}{payment.amount}</p>
           </>
         ) : (
           <p><strong>Amount:</strong> ₹{payment.amount / 100}</p>
