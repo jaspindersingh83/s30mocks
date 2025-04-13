@@ -31,7 +31,7 @@ const InterviewerSlots = () => {
   // Get current date for min attribute
   const currentDate = formatDateForInput(new Date());
 
-  // Format date for display - Converts from UTC to local timezone
+  // Format date for display - Converts from UTC to local timezone without timezone indicator
   const formatDate = (dateString) => {
     const options = {
       weekday: "short",
@@ -40,7 +40,7 @@ const InterviewerSlots = () => {
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-      timeZoneName: "short",
+      // Removed timeZoneName to hide the GMT+X:XX indicator
     };
     return new Date(dateString).toLocaleString("en-US", options);
   };
@@ -215,14 +215,9 @@ const InterviewerSlots = () => {
         return;
       }
 
-      // Create date string in ISO format
-      const dateStr = `${startDate}T${hour
-        .toString()
-        .padStart(2, "0")}:00:00.000Z`;
-
-      // Create date objects using ISO string with Z suffix (UTC time)
-      // This ensures the time is interpreted as UTC regardless of local timezone
-      const start = new Date(dateStr);
+      // Properly convert local time to UTC using our convertToUTC function
+      const startTimeUTC = convertToUTC(startDate, `${hour}:00`);
+      const start = new Date(startTimeUTC);
 
       // Create end date as a new instance
       const end = new Date(start.getTime());

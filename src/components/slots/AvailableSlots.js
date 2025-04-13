@@ -14,7 +14,7 @@ const AvailableSlots = () => {
   const [dateFilter, setDateFilter] = useState("");
   const [interviewerRatings, setInterviewerRatings] = useState({});
 
-  // Format date for display - Converts from UTC to local timezone
+  // Format date for display - Converts from UTC to local timezone without showing timezone indicator
   const formatDate = (dateString) => {
     const options = {
       weekday: "short",
@@ -23,7 +23,7 @@ const AvailableSlots = () => {
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-      timeZoneName: "short",
+      // Remove timeZoneName to hide the GMT+X:XX indicator
     };
     // This automatically converts UTC to local time zone
     return new Date(dateString).toLocaleString("en-US", options);
