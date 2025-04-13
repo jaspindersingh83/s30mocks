@@ -167,11 +167,15 @@ const InterviewerSlots = () => {
         end.setMinutes(start.getMinutes() + 50);
       }
       
-      const res = await axios.post('/api/slots/interviewer', {
+      // Log the request payload for debugging
+      const payload = {
         startTime: start.toISOString(),
         endTime: end.toISOString(),
         interviewType
-      });
+      };
+      console.log('Sending slot creation request with payload:', payload);
+      
+      const res = await axios.post('/api/slots/interviewer', payload);
       
       toast.success('Slot created successfully');
       setSlots([...slots, res.data.slot]);
@@ -187,6 +191,12 @@ const InterviewerSlots = () => {
       loadSlots();
     } catch (err) {
       console.error('Error creating slot:', err);
+      // Log detailed error information
+      if (err.response) {
+        console.error('Error response data:', err.response.data);
+        console.error('Error response status:', err.response.status);
+        console.error('Error response headers:', err.response.headers);
+      }
       toast.error(err.response?.data?.message || 'Failed to create slot');
     }
   };
