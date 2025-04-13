@@ -1,70 +1,73 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import AuthContext from '../../context/AuthContext';
-import './Slots.css';
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import AuthContext from "../../context/AuthContext";
+import "./Slots.css";
 
 const AvailableSlots = () => {
   const { user, isCandidate } = useContext(AuthContext);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [interviewers, setInterviewers] = useState([]);
-  const [selectedInterviewer, setSelectedInterviewer] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
+  const [selectedInterviewer, setSelectedInterviewer] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
   const [interviewerRatings, setInterviewerRatings] = useState({});
 
-  // Format date for display
+  // Format date for display - Converts from UTC to local timezone
   const formatDate = (dateString) => {
-    const options = { 
-      weekday: 'short',
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
     };
-    return new Date(dateString).toLocaleString('en-US', options);
+    // This automatically converts UTC to local time zone
+    return new Date(dateString).toLocaleString("en-US", options);
   };
 
   // Load available slots
   const loadSlots = async () => {
     try {
       setLoading(true);
-      let url = '/api/slots/available';
-      
+      let url = "/api/slots/available";
+
       // Add query parameters
       const params = [];
-      
+
       if (dateFilter) {
+        // Convert local date to UTC for server query
         const filterDate = new Date(dateFilter);
         const nextDay = new Date(filterDate);
         nextDay.setDate(filterDate.getDate() + 1);
-        
+
         params.push(`startDate=${filterDate.toISOString()}`);
         params.push(`endDate=${nextDay.toISOString()}`);
       }
-      
+
       if (selectedInterviewer) {
         params.push(`interviewerId=${selectedInterviewer}`);
       }
-      
+
       if (selectedType) {
         params.push(`interviewType=${selectedType}`);
       }
-      
+
       if (params.length > 0) {
-        url += `?${params.join('&')}`;
+        url += `?${params.join("&")}`;
       }
-      
+
       const res = await axios.get(url);
       setSlots(res.data);
-      
+
       // Extract unique interviewers from slots
       const uniqueInterviewers = [];
       const interviewerIds = new Set();
-      
-      res.data.forEach(slot => {
+
+      res.data.forEach((slot) => {
         if (slot.interviewer && !interviewerIds.has(slot.interviewer._id)) {
           interviewerIds.add(slot.interviewer._id);
           uniqueInterviewers.push({
@@ -72,30 +75,35 @@ const AvailableSlots = () => {
             name: slot.interviewer.name,
             email: slot.interviewer.email,
             averageRating: slot.interviewer.averageRating || 0,
-            ratingsCount: slot.interviewer.ratingsCount || 0
+            ratingsCount: slot.interviewer.ratingsCount || 0,
           });
         }
       });
-      
+
       setInterviewers(uniqueInterviewers);
-      
+
       // Fetch ratings for interviewers if not included in the response
       uniqueInterviewers.forEach(async (interviewer) => {
         if (interviewer.averageRating === 0) {
           try {
-            const ratingRes = await axios.get(`/api/ratings/interviewer/${interviewer.id}/average`);
-            setInterviewerRatings(prev => ({
+            const ratingRes = await axios.get(
+              `/api/ratings/interviewer/${interviewer.id}/average`
+            );
+            setInterviewerRatings((prev) => ({
               ...prev,
-              [interviewer.id]: ratingRes.data
+              [interviewer.id]: ratingRes.data,
             }));
           } catch (error) {
-            console.error(`Error fetching rating for interviewer ${interviewer.id}:`, error);
+            console.error(
+              `Error fetching rating for interviewer ${interviewer.id}:`,
+              error
+            );
           }
         }
       });
     } catch (err) {
-      console.error('Error loading slots:', err);
-      toast.error('Failed to load available slots');
+      console.error("Error loading slots:", err);
+      toast.error("Failed to load available slots");
     } finally {
       setLoading(false);
     }
@@ -108,33 +116,43 @@ const AvailableSlots = () => {
 
   // Handle slot booking
   const handleBookSlot = async (slotId) => {
-    if (!window.confirm('Are you sure you want to book this slot?')) {
+    if (!window.confirm("Are you sure you want to book this slot?")) {
       return;
     }
-    
+
     try {
       await axios.post(`/api/slots/book/${slotId}`);
-      toast.success('Slot booked successfully! Check your interviews page for details.');
-      
+      toast.success(
+        "Slot booked successfully! Check your interviews page for details."
+      );
+
       // Update local state
-      setSlots(slots.filter(slot => slot._id !== slotId));
+      setSlots(slots.filter((slot) => slot._id !== slotId));
     } catch (err) {
-      console.error('Error booking slot:', err);
-      
-      if (err.response?.status === 400 && err.response?.data?.pendingInterviews) {
+      console.error("Error booking slot:", err);
+
+      if (
+        err.response?.status === 400 &&
+        err.response?.data?.pendingInterviews
+      ) {
         // Handle case where candidate has pending payments
         const pendingInterviews = err.response.data.pendingInterviews;
-        
+
         toast.error(
           <div>
             <p>{err.response.data.message}</p>
-            <p>Please complete payment for your scheduled interview before booking a new one.</p>
-            <a href="/interviews" className="toast-link">Go to Interviews</a>
-          </div>, 
+            <p>
+              Please complete payment for your scheduled interview before
+              booking a new one.
+            </p>
+            <a href="/interviews" className="toast-link">
+              Go to Interviews
+            </a>
+          </div>,
           { autoClose: 10000 }
         );
       } else {
-        toast.error(err.response?.data?.message || 'Failed to book slot');
+        toast.error(err.response?.data?.message || "Failed to book slot");
       }
     }
   };
@@ -144,40 +162,47 @@ const AvailableSlots = () => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    
+
     return (
       <div className="stars-container">
         {[...Array(fullStars)].map((_, i) => (
-          <span key={`full-${i}`} className="star filled">★</span>
+          <span key={`full-${i}`} className="star filled">
+            ★
+          </span>
         ))}
         {hasHalfStar && <span className="star half-filled">★</span>}
         {[...Array(emptyStars)].map((_, i) => (
-          <span key={`empty-${i}`} className="star empty">☆</span>
+          <span key={`empty-${i}`} className="star empty">
+            ☆
+          </span>
         ))}
-        <span className="rating-value">{rating > 0 ? rating.toFixed(1) : 'New'}</span>
+        <span className="rating-value">
+          {rating > 0 ? rating.toFixed(1) : "New"}
+        </span>
       </div>
     );
   };
-  
-  // Group slots by date
+
+  // Group slots by date - using local date for display grouping
   const groupSlotsByDate = () => {
     const grouped = {};
-    
-    slots.forEach(slot => {
+
+    slots.forEach((slot) => {
+      // Convert UTC to local date for grouping
       const date = new Date(slot.startTime).toLocaleDateString();
       if (!grouped[date]) {
         grouped[date] = [];
       }
       grouped[date].push(slot);
     });
-    
+
     return grouped;
   };
 
   return (
     <div className="slots-container">
       <h2>Available Interview Slots</h2>
-      
+
       <div className="filter-container">
         <div className="filter-group">
           <label htmlFor="dateFilter">Filter by Date:</label>
@@ -188,7 +213,7 @@ const AvailableSlots = () => {
             onChange={(e) => setDateFilter(e.target.value)}
           />
         </div>
-        
+
         {/* {!isCandidate && (
           <div className="filter-group">
             <label htmlFor="interviewerFilter">Filter by Interviewer:</label>
@@ -218,73 +243,110 @@ const AvailableSlots = () => {
             <option value="DSA">DSA (40 minutes)</option>
             <option value="System Design">System Design (50 minutes)</option>
           </select>
-          
         </div>
-        
+
         {(dateFilter || selectedInterviewer || selectedType) && (
-          <button 
-            className="btn-secondary" 
+          <button
+            className="btn-secondary"
             onClick={() => {
-              setDateFilter('');
-              setSelectedInterviewer('');
-              setSelectedType('');
+              setDateFilter("");
+              setSelectedInterviewer("");
+              setSelectedType("");
             }}
           >
             Clear Filters
           </button>
         )}
       </div>
-      
+
       {loading ? (
         <div className="loading">Loading available slots...</div>
       ) : slots.length === 0 ? (
         <div className="no-slots">
-          No available slots found. Please check back later or adjust your filters.
+          No available slots found. Please check back later or adjust your
+          filters.
         </div>
       ) : (
         <div className="slots-by-date">
           {Object.entries(groupSlotsByDate()).map(([date, dateSlots]) => (
             <div key={date} className="date-group">
-              <h3 className="date-header">{new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h3>
+              <h3 className="date-header">
+                {new Date(date).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </h3>
               <div className="slots-list">
-                {dateSlots.map(slot => (
+                {dateSlots.map((slot) => (
                   <div key={slot._id} className="slot-card available">
                     <div className="slot-time">
-                      <div><strong>Start:</strong> {formatDate(slot.startTime)}</div>
-                      <div><strong>End:</strong> {formatDate(slot.endTime)}</div>
+                      <div>
+                        <strong>Start:</strong> {formatDate(slot.startTime)}
+                      </div>
+                      <div>
+                        <strong>End:</strong> {formatDate(slot.endTime)}
+                      </div>
                     </div>
                     {isCandidate ? (
                       <div className="slot-type" data-type={slot.interviewType}>
-                        <strong>Interview:</strong> {slot.interviewType} ({slot.interviewType === 'DSA' ? '40 minutes' : '50 minutes'})
+                        <strong>Interview:</strong> {slot.interviewType} (
+                        {slot.interviewType === "DSA"
+                          ? "40 minutes"
+                          : "50 minutes"}
+                        )
                       </div>
                     ) : (
                       <div className="interviewer-info">
                         <strong>Interviewer:</strong> {slot.interviewer.name}
                         <div className="interviewer-rating">
-                          {renderRating(slot.interviewer.averageRating || interviewerRatings[slot.interviewer._id]?.averageRating || 0)}
+                          {renderRating(
+                            slot.interviewer.averageRating ||
+                              interviewerRatings[slot.interviewer._id]
+                                ?.averageRating ||
+                              0
+                          )}
                           <span className="rating-count">
-                            {slot.interviewer.ratingsCount || interviewerRatings[slot.interviewer._id]?.count || 0} {(slot.interviewer.ratingsCount || interviewerRatings[slot.interviewer._id]?.count || 0) === 1 ? 'review' : 'reviews'}
+                            {slot.interviewer.ratingsCount ||
+                              interviewerRatings[slot.interviewer._id]?.count ||
+                              0}{" "}
+                            {(slot.interviewer.ratingsCount ||
+                              interviewerRatings[slot.interviewer._id]?.count ||
+                              0) === 1
+                              ? "review"
+                              : "reviews"}
                           </span>
                         </div>
                       </div>
                     )}
                     {!isCandidate && (
                       <div className="slot-type" data-type={slot.interviewType}>
-                        <strong>Type:</strong> {slot.interviewType} ({slot.interviewType === 'DSA' ? '40 minutes' : '50 minutes'})
+                        <strong>Type:</strong> {slot.interviewType} (
+                        {slot.interviewType === "DSA"
+                          ? "40 minutes"
+                          : "50 minutes"}
+                        )
                       </div>
                     )}
                     <div className="slot-duration">
-                      <strong>Duration:</strong> {Math.round((new Date(slot.endTime) - new Date(slot.startTime)) / (1000 * 60))} minutes
+                      <strong>Duration:</strong>{" "}
+                      {Math.round(
+                        (new Date(slot.endTime) - new Date(slot.startTime)) /
+                          (1000 * 60)
+                      )}{" "}
+                      minutes
                     </div>
                     <div className="slot-price">
-                      <strong>Price:</strong> {(() => {
+                      <strong>Price:</strong>{" "}
+                      {(() => {
                         const basePrice = slot.price;
-                        return `${basePrice} ${slot.currency || 'INR'}`;
+                        return `${basePrice} ${slot.currency || "INR"}`;
                       })()}
                     </div>
                     {isCandidate && (
-                      <button 
-                        className="btn-primary" 
+                      <button
+                        className="btn-primary"
                         onClick={() => handleBookSlot(slot._id)}
                       >
                         Book Slot

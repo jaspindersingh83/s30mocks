@@ -1,68 +1,89 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import AuthContext from '../../context/AuthContext';
-import './Slots.css';
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import AuthContext from "../../context/AuthContext";
+import "./Slots.css";
 
 const InterviewerSlots = () => {
   const { user, isInterviewer } = useContext(AuthContext);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [startDate, setStartDate] = useState('');
-  const [startHour, setStartHour] = useState('');
+  const [startDate, setStartDate] = useState("");
+  const [startHour, setStartHour] = useState("");
   const [isRecurring, setIsRecurring] = useState(false);
-  const [dayOfWeek, setDayOfWeek] = useState('');
+  const [dayOfWeek, setDayOfWeek] = useState("");
   const [recurringWeeks, setRecurringWeeks] = useState(4); // Default to 4 weeks
-  const [defaultMeetingLink, setDefaultMeetingLink] = useState('');
+  const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
   const [showMeetingLinkForm, setShowMeetingLinkForm] = useState(false);
 
-  const [interviewType, setInterviewType] = useState('DSA');
-  const [dateFilter, setDateFilter] = useState('');
+  const [interviewType, setInterviewType] = useState("DSA");
+  const [dateFilter, setDateFilter] = useState("");
 
   // Format date for input fields
   const formatDateForInput = (date) => {
     const d = new Date(date);
     const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  
+
   // Get current date for min attribute
   const currentDate = formatDateForInput(new Date());
-  
-  // Format date for display
+
+  // Format date for display - Converts from UTC to local timezone
   const formatDate = (dateString) => {
-    const options = { 
-      weekday: 'short',
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
     };
-    return new Date(dateString).toLocaleString('en-US', options);
+    return new Date(dateString).toLocaleString("en-US", options);
+  };
+
+  // Convert local datetime to UTC for sending to server
+  const convertToUTC = (date, timeString) => {
+    const [hours, minutes] = timeString.split(":").map(Number);
+    const localDate = new Date(date);
+    localDate.setHours(hours, minutes, 0, 0);
+    return localDate.toISOString();
   };
 
   // Load interviewer's slots
   const loadSlots = async () => {
     try {
       setLoading(true);
-      let url = '/api/slots/interviewer';
-      
+      let url = "/api/slots/interviewer";
+
+      // Add query parameters if filters are set
+      const params = [];
+
       if (dateFilter) {
         const filterDate = new Date(dateFilter);
         const nextDay = new Date(filterDate);
         nextDay.setDate(filterDate.getDate() + 1);
-        
-        url += `?startDate=${filterDate.toISOString()}&endDate=${nextDay.toISOString()}`;
+
+        params.push(`startDate=${filterDate.toISOString()}`);
+        params.push(`endDate=${nextDay.toISOString()}`);
       }
-      
+
+      if (interviewType) {
+        params.push(`interviewType=${interviewType}`);
+      }
+
+      if (params.length > 0) {
+        url += `?${params.join("&")}`;
+      }
+
       const res = await axios.get(url);
       setSlots(res.data);
     } catch (err) {
-      console.error('Error loading slots:', err);
-      toast.error('Failed to load your slots');
+      console.error("Error loading slots:", err);
+      toast.error("Failed to load your slots");
     } finally {
       setLoading(false);
     }
@@ -74,69 +95,67 @@ const InterviewerSlots = () => {
       loadSlots();
       loadUserProfile();
     }
-  }, [isInterviewer, dateFilter]);
-  
+  }, [isInterviewer, dateFilter, interviewType]);
+
   // Load user profile to get default meeting link
   const loadUserProfile = async () => {
     try {
-      const res = await axios.get('/api/users/me');
+      const res = await axios.get("/api/users/me");
       if (res.data.defaultMeetingLink) {
         setDefaultMeetingLink(res.data.defaultMeetingLink);
       }
     } catch (err) {
-      console.error('Error loading user profile:', err);
-      toast.error('Failed to load your profile settings');
+      console.error("Error loading user profile:", err);
+      toast.error("Failed to load your profile settings");
     }
   };
 
-
-  
-
-  
   // Handle meeting link update
   const handleMeetingLinkUpdate = async (e) => {
     e.preventDefault();
-    
+
     // Validate meeting link
     if (!defaultMeetingLink) {
-      toast.error('Please enter a meeting link');
+      toast.error("Please enter a meeting link");
       return;
     }
-    
+
     // Validate URL format
     try {
       new URL(defaultMeetingLink);
     } catch (err) {
-      toast.error('Please enter a valid URL');
+      toast.error("Please enter a valid URL");
       return;
     }
-    
+
     try {
-      const res = await axios.put('/api/users/profile', { defaultMeetingLink });
-      toast.success('Default meeting link updated successfully');
+      const res = await axios.put("/api/users/profile", { defaultMeetingLink });
+      toast.success("Default meeting link updated successfully");
       setShowMeetingLinkForm(false);
     } catch (err) {
-      console.error('Error updating meeting link:', err);
-      toast.error(err.response?.data?.message || 'Failed to update meeting link');
+      console.error("Error updating meeting link:", err);
+      toast.error(
+        err.response?.data?.message || "Failed to update meeting link"
+      );
     }
   };
-  
+
   // Handle slot creation
   const handleCreateSlot = async (e) => {
     e.preventDefault();
-    
+
     if (isRecurring) {
       if (!dayOfWeek || !startHour || !interviewType || !recurringWeeks) {
-        toast.error('Please fill in all required fields');
+        toast.error("Please fill in all required fields");
         return;
       }
     } else {
       if (!startDate || !startHour || !interviewType) {
-        toast.error('Please fill in all required fields');
+        toast.error("Please fill in all required fields");
         return;
       }
     }
-    
+
     try {
       if (isRecurring) {
         // Create recurring slots
@@ -144,154 +163,167 @@ const InterviewerSlots = () => {
         const today = new Date();
         const dayOfWeekInt = parseInt(dayOfWeek);
         const hourInt = parseInt(startHour);
-        
+
         // Find the next occurrence of the selected day of week
         let nextDate = new Date();
         const daysToAdd = (7 + dayOfWeekInt - nextDate.getDay()) % 7;
         nextDate.setDate(nextDate.getDate() + daysToAdd);
         nextDate.setHours(hourInt, 0, 0, 0);
-        
+
         // If the calculated date is in the past, add 7 days
         if (nextDate < today) {
           nextDate.setDate(nextDate.getDate() + 7);
         }
-        
+
         // Create slots for the specified number of weeks
         for (let i = 0; i < recurringWeeks; i++) {
           const slotDate = new Date(nextDate);
-          slotDate.setDate(slotDate.getDate() + (i * 7));
-          
+          slotDate.setDate(slotDate.getDate() + i * 7);
+
           const endDate = new Date(slotDate);
-          if (interviewType === 'DSA') {
+          if (interviewType === "DSA") {
             endDate.setMinutes(endDate.getMinutes() + 40);
           } else {
             endDate.setMinutes(endDate.getMinutes() + 50);
           }
-          
+
           slots.push({
             start: slotDate.toISOString(),
-            end: endDate.toISOString()
+            end: endDate.toISOString(),
           });
         }
-        
+
         // Create multiple slots
-        const response = await axios.post('/api/slots/batch', {
+        const response = await axios.post("/api/slots/batch", {
           interviewType,
-          slots
+          slots,
         });
-        
+
         toast.success(`Created ${slots.length} recurring slots successfully`);
         setIsRecurring(false);
-        setDayOfWeek('');
+        setDayOfWeek("");
         setRecurringWeeks(4);
-        setStartHour('');
+        setStartHour("");
         loadSlots();
         return;
       }
-      
+
       // For single slot
       const hour = parseInt(startHour);
       if (isNaN(hour) || hour < 0 || hour > 23) {
-        toast.error('Please select a valid hour');
+        toast.error("Please select a valid hour");
         return;
       }
-      
+
       // Create date string in ISO format
-      const dateStr = `${startDate}T${hour.toString().padStart(2, '0')}:00:00.000Z`;
-      
+      const dateStr = `${startDate}T${hour
+        .toString()
+        .padStart(2, "0")}:00:00.000Z`;
+
       // Create date objects using ISO string with Z suffix (UTC time)
       // This ensures the time is interpreted as UTC regardless of local timezone
       const start = new Date(dateStr);
-      
+
       // Create end date as a new instance
       const end = new Date(start.getTime());
-      
+
       // Validate the date
       if (isNaN(start.getTime())) {
-        toast.error('Invalid date or time');
+        toast.error("Invalid date or time");
         return;
       }
-      
+
       // Ensure start time is in the future
       const now = new Date();
       if (start <= now) {
-        toast.error('Start time must be in the future');
+        toast.error("Start time must be in the future");
         return;
       }
-      
+
       // Calculate end time based on interview type
-      if (interviewType === 'DSA') {
+      if (interviewType === "DSA") {
         end.setMinutes(start.getMinutes() + 40);
       } else {
         end.setMinutes(start.getMinutes() + 50);
       }
-      
+
       const payload = {
         startTime: start.toISOString(),
         endTime: end.toISOString(),
-        interviewType
+        interviewType,
       };
-      
-      const res = await axios.post('/api/slots/interviewer', payload);
-      
-      toast.success('Slot created successfully');
+
+      const res = await axios.post("/api/slots/interviewer", payload);
+
+      toast.success("Slot created successfully");
       setSlots([...slots, res.data.slot]);
-      
+
       // Reset form
-      setStartDate('');
-      setStartHour('');
+      setStartDate("");
+      setStartHour("");
       setIsRecurring(false);
-      setDayOfWeek('');
+      setDayOfWeek("");
       setRecurringWeeks(4);
-      
+
       // Reload slots to ensure we have the latest data
       loadSlots();
     } catch (err) {
-      console.error('Error creating slot:', err);
-      toast.error(err.response?.data?.message || 'Failed to create slot');
+      console.error("Error creating slot:", err);
+      toast.error(err.response?.data?.message || "Failed to create slot");
     }
   };
 
   // Handle slot deletion
   const handleDeleteSlot = async (slotId) => {
-    if (!window.confirm('Are you sure you want to delete this slot?')) {
+    if (!window.confirm("Are you sure you want to delete this slot?")) {
       return;
     }
-    
+
     try {
       await axios.delete(`/api/slots/interviewer/${slotId}`);
-      toast.success('Slot deleted successfully');
-      
+      toast.success("Slot deleted successfully");
+
       // Update local state
-      setSlots(slots.filter(slot => slot._id !== slotId));
+      setSlots(slots.filter((slot) => slot._id !== slotId));
     } catch (err) {
-      console.error('Error deleting slot:', err);
-      toast.error(err.response?.data?.message || 'Failed to delete slot');
+      console.error("Error deleting slot:", err);
+      toast.error(err.response?.data?.message || "Failed to delete slot");
     }
   };
 
   if (!isInterviewer) {
-    return <div className="container">You must be an interviewer to access this page.</div>;
+    return (
+      <div className="container">
+        You must be an interviewer to access this page.
+      </div>
+    );
   }
 
   return (
     <div className="slots-container">
       <h2>Manage Your Interview Slots</h2>
-      
+
       <div className="meeting-link-container">
         <div className="meeting-link-header">
           <h3>Default Meeting Link</h3>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="btn-link"
             onClick={() => setShowMeetingLinkForm(!showMeetingLinkForm)}
           >
-            {showMeetingLinkForm ? 'Cancel' : (defaultMeetingLink ? 'Edit' : 'Set Up')}
+            {showMeetingLinkForm
+              ? "Cancel"
+              : defaultMeetingLink
+              ? "Edit"
+              : "Set Up"}
           </button>
         </div>
-        
+
         {showMeetingLinkForm ? (
-          <form onSubmit={handleMeetingLinkUpdate} className="meeting-link-form">
+          <form
+            onSubmit={handleMeetingLinkUpdate}
+            className="meeting-link-form"
+          >
             <div className="form-group">
               <label htmlFor="defaultMeetingLink">Meeting Link</label>
               <input
@@ -302,27 +334,41 @@ const InterviewerSlots = () => {
                 placeholder="Enter your default meeting link (e.g., Google Meet, Zoom)"
                 required
               />
-              <p className="form-help-text">This link will be used for all your interviews unless manually changed</p>
+              <p className="form-help-text">
+                This link will be used for all your interviews unless manually
+                changed
+              </p>
             </div>
-            <button type="submit" className="btn-primary">Save Meeting Link</button>
+            <button type="submit" className="btn-primary">
+              Save Meeting Link
+            </button>
           </form>
         ) : defaultMeetingLink ? (
           <div className="current-meeting-link">
-            <p><strong>Your current meeting link:</strong></p>
-            <a href={defaultMeetingLink} target="_blank" rel="noopener noreferrer" className="meeting-link">
+            <p>
+              <strong>Your current meeting link:</strong>
+            </p>
+            <a
+              href={defaultMeetingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="meeting-link"
+            >
               {defaultMeetingLink}
             </a>
             <p className="meeting-link-info">
-              This link will be automatically used when candidates book interviews with you.
+              This link will be automatically used when candidates book
+              interviews with you.
             </p>
           </div>
         ) : (
           <p className="no-meeting-link-message">
-            You haven't set up a default meeting link yet. Setting up a default link will automatically use it for all your interviews.
+            You haven't set up a default meeting link yet. Setting up a default
+            link will automatically use it for all your interviews.
           </p>
         )}
       </div>
-      
+
       <div className="slot-form-container">
         <h3>Create New Slot</h3>
         <form onSubmit={handleCreateSlot} className="slot-form">
@@ -336,10 +382,12 @@ const InterviewerSlots = () => {
                 required
               >
                 <option value="DSA">DSA (40 minutes)</option>
-                <option value="System Design">System Design (50 minutes)</option>
+                <option value="System Design">
+                  System Design (50 minutes)
+                </option>
               </select>
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="recurring">Slot Type</label>
               <select
@@ -387,7 +435,7 @@ const InterviewerSlots = () => {
                 />
               </div>
             )}
-            
+
             <div className="form-group">
               <label htmlFor="startHour">Hour</label>
               <select
@@ -400,7 +448,7 @@ const InterviewerSlots = () => {
                 {Array.from({ length: 24 }, (_, i) => {
                   const hour = i;
                   const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-                  const ampm = hour < 12 ? 'AM' : 'PM';
+                  const ampm = hour < 12 ? "AM" : "PM";
                   return (
                     <option key={hour} value={hour}>
                       {displayHour}:00 {ampm}
@@ -409,7 +457,7 @@ const InterviewerSlots = () => {
                 })}
               </select>
             </div>
-            
+
             {isRecurring && (
               <div className="form-group">
                 <label htmlFor="recurringWeeks">Number of Weeks</label>
@@ -419,8 +467,10 @@ const InterviewerSlots = () => {
                   onChange={(e) => setRecurringWeeks(parseInt(e.target.value))}
                   required={isRecurring}
                 >
-                  {[1, 2, 3, 4, 8, 12].map(weeks => (
-                    <option key={weeks} value={weeks}>{weeks} {weeks === 1 ? 'week' : 'weeks'}</option>
+                  {[1, 2, 3, 4, 8, 12].map((weeks) => (
+                    <option key={weeks} value={weeks}>
+                      {weeks} {weeks === 1 ? "week" : "weeks"}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -429,15 +479,17 @@ const InterviewerSlots = () => {
 
           <div className="form-row">
             <div className="form-group button-group">
-              <button type="submit" className="btn-primary">Create Slot{isRecurring ? 's' : ''}</button>
+              <button type="submit" className="btn-primary">
+                Create Slot{isRecurring ? "s" : ""}
+              </button>
             </div>
           </div>
         </form>
       </div>
-      
+
       <div className="slots-list-container">
         <h3>Your Slots</h3>
-        
+
         <div className="filter-container">
           <label htmlFor="dateFilter">Filter by Date:</label>
           <input
@@ -447,15 +499,12 @@ const InterviewerSlots = () => {
             onChange={(e) => setDateFilter(e.target.value)}
           />
           {dateFilter && (
-            <button 
-              className="btn-secondary" 
-              onClick={() => setDateFilter('')}
-            >
+            <button className="btn-secondary" onClick={() => setDateFilter("")}>
               Clear Filter
             </button>
           )}
         </div>
-        
+
         {loading ? (
           <div className="loading">Loading slots...</div>
         ) : slots.length === 0 ? (
@@ -464,17 +513,27 @@ const InterviewerSlots = () => {
           </div>
         ) : (
           <div className="slots-list">
-            {slots.map(slot => (
-              <div key={slot._id} className={`slot-card ${slot.isBooked ? 'booked' : 'available'}`}>
+            {slots.map((slot) => (
+              <div
+                key={slot._id}
+                className={`slot-card ${
+                  slot.isBooked ? "booked" : "available"
+                }`}
+              >
                 <div className="slot-time">
-                  <div><strong>Start:</strong> {formatDate(slot.startTime)}</div>
-                  <div><strong>End:</strong> {formatDate(slot.endTime)}</div>
+                  <div>
+                    <strong>Start:</strong> {formatDate(slot.startTime)}
+                  </div>
+                  <div>
+                    <strong>End:</strong> {formatDate(slot.endTime)}
+                  </div>
                 </div>
                 <div className="slot-type" data-type={slot.interviewType}>
-                  <strong>Type:</strong> {slot.interviewType} ({slot.interviewType === 'DSA' ? '40 minutes' : '50 minutes'})
+                  <strong>Type:</strong> {slot.interviewType} (
+                  {slot.interviewType === "DSA" ? "40 minutes" : "50 minutes"})
                 </div>
                 <div className="slot-status">
-                  Status: {slot.isBooked ? 'Booked' : 'Available'}
+                  Status: {slot.isBooked ? "Booked" : "Available"}
                 </div>
                 {slot.isBooked && slot.interview && (
                   <div className="interview-info">
@@ -483,8 +542,8 @@ const InterviewerSlots = () => {
                   </div>
                 )}
                 {!slot.isBooked && (
-                  <button 
-                    className="btn-danger" 
+                  <button
+                    className="btn-danger"
                     onClick={() => handleDeleteSlot(slot._id)}
                   >
                     Delete
