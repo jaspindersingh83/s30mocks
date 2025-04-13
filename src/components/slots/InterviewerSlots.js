@@ -13,6 +13,8 @@ const InterviewerSlots = () => {
   const [isRecurring, setIsRecurring] = useState(false);
   const [dayOfWeek, setDayOfWeek] = useState('');
   const [recurringWeeks, setRecurringWeeks] = useState(4); // Default to 4 weeks
+  const [defaultMeetingLink, setDefaultMeetingLink] = useState('');
+  const [showMeetingLinkForm, setShowMeetingLinkForm] = useState(false);
 
   const [interviewType, setInterviewType] = useState('DSA');
   const [dateFilter, setDateFilter] = useState('');
@@ -70,12 +72,54 @@ const InterviewerSlots = () => {
   useEffect(() => {
     if (isInterviewer) {
       loadSlots();
+      loadUserProfile();
     }
   }, [isInterviewer, dateFilter]);
+  
+  // Load user profile to get default meeting link
+  const loadUserProfile = async () => {
+    try {
+      const res = await axios.get('/api/users/me');
+      if (res.data.defaultMeetingLink) {
+        setDefaultMeetingLink(res.data.defaultMeetingLink);
+      }
+    } catch (err) {
+      console.error('Error loading user profile:', err);
+      toast.error('Failed to load your profile settings');
+    }
+  };
 
 
   
 
+  
+  // Handle meeting link update
+  const handleMeetingLinkUpdate = async (e) => {
+    e.preventDefault();
+    
+    // Validate meeting link
+    if (!defaultMeetingLink) {
+      toast.error('Please enter a meeting link');
+      return;
+    }
+    
+    // Validate URL format
+    try {
+      new URL(defaultMeetingLink);
+    } catch (err) {
+      toast.error('Please enter a valid URL');
+      return;
+    }
+    
+    try {
+      const res = await axios.put('/api/users/profile', { defaultMeetingLink });
+      toast.success('Default meeting link updated successfully');
+      setShowMeetingLinkForm(false);
+    } catch (err) {
+      console.error('Error updating meeting link:', err);
+      toast.error(err.response?.data?.message || 'Failed to update meeting link');
+    }
+  };
   
   // Handle slot creation
   const handleCreateSlot = async (e) => {
@@ -233,6 +277,51 @@ const InterviewerSlots = () => {
   return (
     <div className="slots-container">
       <h2>Manage Your Interview Slots</h2>
+      
+      <div className="meeting-link-container">
+        <div className="meeting-link-header">
+          <h3>Default Meeting Link</h3>
+          <button 
+            type="button" 
+            className="btn-link"
+            onClick={() => setShowMeetingLinkForm(!showMeetingLinkForm)}
+          >
+            {showMeetingLinkForm ? 'Cancel' : (defaultMeetingLink ? 'Edit' : 'Set Up')}
+          </button>
+        </div>
+        
+        {showMeetingLinkForm ? (
+          <form onSubmit={handleMeetingLinkUpdate} className="meeting-link-form">
+            <div className="form-group">
+              <label htmlFor="defaultMeetingLink">Meeting Link</label>
+              <input
+                type="url"
+                id="defaultMeetingLink"
+                value={defaultMeetingLink}
+                onChange={(e) => setDefaultMeetingLink(e.target.value)}
+                placeholder="Enter your default meeting link (e.g., Google Meet, Zoom)"
+                required
+              />
+              <p className="form-help-text">This link will be used for all your interviews unless manually changed</p>
+            </div>
+            <button type="submit" className="btn-primary">Save Meeting Link</button>
+          </form>
+        ) : defaultMeetingLink ? (
+          <div className="current-meeting-link">
+            <p><strong>Your current meeting link:</strong></p>
+            <a href={defaultMeetingLink} target="_blank" rel="noopener noreferrer" className="meeting-link">
+              {defaultMeetingLink}
+            </a>
+            <p className="meeting-link-info">
+              This link will be automatically used when candidates book interviews with you.
+            </p>
+          </div>
+        ) : (
+          <p className="no-meeting-link-message">
+            You haven't set up a default meeting link yet. Setting up a default link will automatically use it for all your interviews.
+          </p>
+        )}
+      </div>
       
       <div className="slot-form-container">
         <h3>Create New Slot</h3>

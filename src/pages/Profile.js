@@ -11,6 +11,7 @@ const Profile = () => {
     email: '',
     phone: '',
     linkedInUrl: '',
+    defaultMeetingLink: '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
@@ -47,6 +48,7 @@ const Profile = () => {
         email: user.email || '',
         phone: user.phone || '',
         linkedInUrl: user.linkedInUrl || '',
+        defaultMeetingLink: user.defaultMeetingLink || '',
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
@@ -74,6 +76,7 @@ const Profile = () => {
         name: formData.name,
         phone: formData.phone,
         linkedInUrl: formData.linkedInUrl,
+        defaultMeetingLink: formData.defaultMeetingLink,
         workExperiences: formData.workExperiences,
         education: formData.education
       };
@@ -172,6 +175,22 @@ const Profile = () => {
             />
             <small>Share your LinkedIn profile to connect with interviewers</small>
           </div>
+          
+          {/* Only show default meeting link field for interviewers */}
+          {user?.role === 'interviewer' && (
+            <div className="form-group">
+              <label htmlFor="defaultMeetingLink">Default Meeting Link</label>
+              <input
+                type="url"
+                id="defaultMeetingLink"
+                name="defaultMeetingLink"
+                value={formData.defaultMeetingLink}
+                onChange={handleChange}
+                placeholder="https://meet.google.com/xxx-xxxx-xxx"
+              />
+              <small>This link will be used for all your interviews. Use Google Meet, Zoom, or any other video conferencing tool.</small>
+            </div>
+          )}
         </div>
         
         <div className="form-section">

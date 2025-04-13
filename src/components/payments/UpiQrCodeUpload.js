@@ -78,6 +78,8 @@ const UpiQrCodeUpload = () => {
       return;
     }
     
+
+    
     if (!qrCode && !currentQrCode) {
       setMessage({ text: 'Please upload a QR code image', type: 'error' });
       return;
@@ -112,6 +114,8 @@ const UpiQrCodeUpload = () => {
       setLoading(false);
     }
   };
+
+
 
   return (
     <div className="upi-qr-upload-container">
@@ -149,6 +153,8 @@ const UpiQrCodeUpload = () => {
             placeholder="Enter your UPI ID"
           />
         </div>
+        
+
         
         <div className="form-group">
           <label htmlFor="qrCode">UPI QR Code</label>

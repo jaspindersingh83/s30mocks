@@ -30,7 +30,8 @@
   color: var(--text-color);
 }
 
-.form-group input[type="text"] {
+.form-group input[type="text"],
+.form-group input[type="url"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #555;
