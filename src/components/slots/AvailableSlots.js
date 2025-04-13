@@ -189,7 +189,7 @@ const AvailableSlots = () => {
           />
         </div>
         
-        {!isCandidate && (
+        {/* {!isCandidate && (
           <div className="filter-group">
             <label htmlFor="interviewerFilter">Filter by Interviewer:</label>
             <select
@@ -206,7 +206,7 @@ const AvailableSlots = () => {
             </select>
           </div>
         )}
-        
+         */}
         <div className="filter-group">
           <label htmlFor="typeFilter">Filter by Interview Type:</label>
           <select
@@ -218,6 +218,7 @@ const AvailableSlots = () => {
             <option value="DSA">DSA (40 minutes)</option>
             <option value="System Design">System Design (50 minutes)</option>
           </select>
+          
         </div>
         
         {(dateFilter || selectedInterviewer || selectedType) && (
