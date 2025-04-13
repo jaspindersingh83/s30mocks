@@ -55,13 +55,13 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="dashboard">
+    <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>Welcome, {user?.name}</h1>
         <p className="user-role">{user?.role}</p>
       </div>
 
-      <div className="stats-container">
+      <div className="dashboard-stats">
         <div className="stat-card">
           <h3>Upcoming Interviews</h3>
           <p className="stat-value">{stats.upcomingInterviews}</p>

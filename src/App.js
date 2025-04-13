@@ -34,6 +34,14 @@ import WhatsAppChat from './components/common/WhatsAppChat';
 
 // CSS
 import './App.css';
+import './styles/responsive.css';
+import './styles/forms.css';
+import './styles/cards.css';
+import './styles/dashboard.css';
+import './styles/interviews.css';
+import './styles/payments.css';
+import './styles/admin.css';
+import './styles/problems.css';
 
 // Set up axios defaults
 axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000';

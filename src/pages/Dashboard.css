@@ -1,10 +1,6 @@
-.dashboard {
-  padding: 20px;
-}
+/* Using dashboard-container from dashboard.css */
 
-.dashboard-header {
-  margin-bottom: 30px;
-}
+/* Using dashboard-header from dashboard.css */
 
 .dashboard-header h1 {
   margin-bottom: 5px;
@@ -26,19 +22,12 @@
   color: var(--text-secondary);
 }
 
-.stats-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
-}
+/* Using dashboard-stats from dashboard.css */
 
+/* Extending stat-card from dashboard.css */
 .stat-card {
-  background-color: var(--app-background);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  padding: 20px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .stat-card:hover {
@@ -51,6 +40,7 @@
   margin-bottom: 15px;
   color: var(--text-color);
   font-size: 1.1rem;
+  /* Matches .stat-title from dashboard.css */
 }
 
 .stat-value {

@@ -1,0 +1,169 @@
+/* Responsive Admin Styles */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-header {
+  margin-bottom: 30px;
+}
+
+.admin-header h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.admin-tab {
+  padding: 10px 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.admin-tab:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.admin-tab.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.admin-section {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-section-title {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.admin-section-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.admin-card {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.admin-card-header {
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-color);
+}
+
+.admin-card-body {
+  padding: 15px;
+}
+
+.admin-card-footer {
+  padding: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+  .admin-container {
+    padding: 15px;
+  }
+  
+  .admin-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .admin-tabs {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .admin-tab {
+    text-align: center;
+  }
+  
+  .admin-section {
+    padding: 15px;
+  }
+  
+  .admin-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .admin-section-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .admin-section-actions button {
+    width: 100%;
+  }
+  
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-card-footer {
+    flex-direction: column;
+  }
+  
+  .admin-card-footer button {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}

@@ -15,6 +15,13 @@
   padding: 30px;
 }
 
+@media screen and (max-width: 768px) {
+  .auth-card {
+    padding: 20px;
+    max-width: 100%;
+  }
+}
+
 .auth-card h2 {
   text-align: center;
   margin-bottom: 25px;
@@ -26,6 +33,17 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .auth-form {
+    gap: 15px;
+  }
+  
+  .auth-form button {
+    width: 100%;
+    padding: 12px;
+  }
 }
 
 .form-group {

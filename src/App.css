@@ -73,6 +73,14 @@ button, .btn {
   transition: background-color 0.3s;
 }
 
+@media (max-width: 768px) {
+  button, .btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
 button:hover, .btn:hover {
   background-color: var(--primary-hover);
 }
@@ -81,4 +89,6 @@ button:hover, .btn:hover {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  width: 100%;
+  overflow-x: hidden;
 }

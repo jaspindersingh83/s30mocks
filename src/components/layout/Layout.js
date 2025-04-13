@@ -1,12 +1,12 @@
 import React from 'react';
-import Navbar from './Navbar';
+import ResponsiveNavbar from './ResponsiveNavbar';
 import Footer from './Footer';
 import './Layout.css';
 
 const Layout = ({ children }) => {
   return (
     <div className="layout">
-      <Navbar />
+      <ResponsiveNavbar />
       <main className="main-content">{children}</main>
       <Footer />
     </div>

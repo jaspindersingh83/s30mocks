@@ -1,0 +1,109 @@
+.responsive-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.responsive-table th,
+.responsive-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.responsive-table th {
+  background-color: rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+}
+
+.responsive-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Mobile table cards */
+.mobile-table {
+  display: none;
+}
+
+/* Show mobile table on small screens */
+@media screen and (max-width: 768px) {
+  .desktop-table {
+    display: none;
+  }
+  
+  .mobile-table {
+    display: block;
+  }
+}
+
+.mobile-table-card {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 15px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-table-row {
+  display: flex;
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-table-header {
+  font-weight: bold;
+  width: 40%;
+  padding-right: 10px;
+}
+
+.mobile-table-cell {
+  width: 60%;
+}
+
+.mobile-table-actions {
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Responsive breakpoints */
+@media screen and (max-width: 768px) {
+  .desktop-table {
+    display: none;
+  }
+  
+  .mobile-table {
+    display: block;
+  }
+  
+  /* Ensure buttons in mobile view are properly sized */
+  .mobile-table-actions button,
+  .mobile-table-actions .btn {
+    margin: 5px;
+    padding: 8px 16px;
+    min-width: 80px;
+  }
+}
+
+/* For very small screens */
+@media screen and (max-width: 480px) {
+  .mobile-table-row {
+    flex-direction: column;
+  }
+  
+  .mobile-table-header,
+  .mobile-table-cell {
+    width: 100%;
+  }
+  
+  .mobile-table-header {
+    margin-bottom: 5px;
+  }
+}

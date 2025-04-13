@@ -1,0 +1,105 @@
+/* Responsive Card Styles */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -10px;
+}
+
+.card {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex: 1 0 300px;
+  max-width: calc(33.333% - 20px);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-footer {
+  padding: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card-footer button {
+  margin-left: 10px;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 992px) {
+  .card {
+    max-width: calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .card-container {
+    flex-direction: column;
+  }
+  
+  .card {
+    max-width: 100%;
+  }
+  
+  .card-footer {
+    flex-direction: column;
+  }
+  
+  .card-footer button {
+    margin-left: 0;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+}
+
+/* Slot cards specific styles */
+.slot-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.slot-card .card-body {
+  flex: 1;
+}
+
+.slot-info {
+  margin-bottom: 10px;
+}
+
+.slot-info p {
+  margin: 5px 0;
+}
+
+.slot-actions {
+  margin-top: 15px;
+}
+
+@media screen and (max-width: 768px) {
+  .slot-actions button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ResponsiveTable from '../common/ResponsiveTable';
 import { toast } from 'react-toastify';
-import './Admin.css';
+// Using global admin styles from styles/admin.css
 
 const PriceManagement = () => {
   const [prices, setPrices] = useState([]);
@@ -69,44 +70,42 @@ const PriceManagement = () => {
 
   return (
     <div className="admin-section">
-      <h2>Interview Price Management</h2>
+      <div className="admin-section-header">
+        <h2 className="admin-section-title">Interview Price Management</h2>
+      </div>
       
-      <div className="price-management">
-        <div className="current-prices">
-          <h3>Current Prices</h3>
+      <div className="admin-grid">
+        <div className="admin-card">
+          <div className="admin-card-header">
+            <h3 className="admin-card-title">Current Prices</h3>
+          </div>
+          <div className="admin-card-body">
           {loading ? (
             <p>Loading prices...</p>
           ) : prices.length === 0 ? (
             <p>No prices set yet</p>
           ) : (
-            <table className="price-table">
-              <thead>
-                <tr>
-                  <th>Interview Type</th>
-                  <th>Price</th>
-                  <th>Currency</th>
-                  <th>Last Updated</th>
+            <ResponsiveTable 
+              headers={['Interview Type', 'Price', 'Currency', 'Last Updated']}
+              data={prices}
+              renderRow={(price, index) => (
+                <tr key={price._id}>
+                  <td>{price.interviewType}</td>
+                  <td>{price.price}</td>
+                  <td>{price.currency || 'INR'}</td>
+                  <td>{new Date(price.updatedAt).toLocaleString()}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {prices.map((price) => {
-                  // No GST calculation needed
-                  return (
-                    <tr key={price._id}>
-                      <td>{price.interviewType}</td>
-                      <td>{price.price}</td>
-                      <td>{price.currency || 'INR'}</td>
-                      <td>{new Date(price.updatedAt).toLocaleString()}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+              )}
+            />
           )}
+          </div>
         </div>
         
-        <div className="update-price">
-          <h3>Update Price</h3>
+        <div className="admin-card">
+          <div className="admin-card-header">
+            <h3 className="admin-card-title">Update Price</h3>
+          </div>
+          <div className="admin-card-body">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="interviewType">Interview Type</label>
@@ -156,6 +155,7 @@ const PriceManagement = () => {
               Update Price
             </button>
           </form>
+          </div>
         </div>
       </div>
     </div>

@@ -2,6 +2,8 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .slots-container h2 {
@@ -41,6 +43,26 @@
   gap: 15px;
   align-items: flex-end;
   flex-wrap: wrap;
+}
+
+@media screen and (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .form-group {
+    width: 100%;
+  }
+  
+  .button-group {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .button-group button {
+    width: 100%;
+  }
 }
 
 .form-group {
@@ -95,7 +117,19 @@
   background-color: var(--app-background);
   padding: 15px;
   border-radius: 8px;
-  align-items: flex-end
+  align-items: flex-end;
+}
+
+@media screen and (max-width: 768px) {
+  .filter-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-container button {
+    width: 100%;
+    margin-top: 10px;
+  }
 }
 
 .filter-group {
@@ -125,6 +159,12 @@
   margin-top: 20px;
 }
 
+@media screen and (max-width: 768px) {
+  .slots-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 .slot-card {
   background-color: #333;
   border-radius: 8px;
@@ -137,6 +177,17 @@
   transition: transform 0.2s, box-shadow 0.2s;
   color: var(--text-color);
   border: 1px solid #444;
+}
+
+@media screen and (max-width: 768px) {
+  .slot-card {
+    padding: 12px;
+  }
+  
+  .slot-card button {
+    width: 100%;
+    margin-top: 10px;
+  }
 }
 
 .slot-card:hover {

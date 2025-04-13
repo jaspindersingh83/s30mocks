@@ -1,0 +1,157 @@
+/* Responsive Payment Styles */
+.payment-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.payment-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.payment-header h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.payment-card {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-info {
+  margin-bottom: 20px;
+}
+
+.payment-info h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.payment-details {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.payment-details p {
+  margin: 10px 0;
+  color: var(--text-color);
+}
+
+.payment-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.qr-code-section {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.qr-code-image {
+  max-width: 250px;
+  height: auto;
+  margin: 15px auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-instruction {
+  margin-top: 15px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.upload-section {
+  margin: 30px 0;
+}
+
+.upload-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-size: 1.2rem;
+}
+
+.upload-container {
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.upload-container:hover {
+  border-color: var(--primary-color);
+}
+
+.upload-icon {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: var(--text-secondary);
+}
+
+.upload-text {
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.upload-hint {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.preview-image {
+  max-width: 100%;
+  height: auto;
+  margin: 15px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+  .payment-container {
+    padding: 15px;
+  }
+  
+  .payment-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .payment-card {
+    padding: 15px;
+  }
+  
+  .payment-actions {
+    flex-direction: column;
+  }
+  
+  .payment-actions button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .qr-code-image {
+    max-width: 200px;
+  }
+  
+  .upload-container {
+    padding: 20px;
+  }
+}
