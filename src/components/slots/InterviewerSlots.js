@@ -148,7 +148,14 @@ const InterviewerSlots = () => {
       // For single slot
       // Use a more reliable approach to create the date
       // First create a date string in ISO format
-      const dateStr = `${startDate}T${startHour.padStart(2, '0')}:00:00`;
+      const hour = parseInt(startHour);
+      if (isNaN(hour) || hour < 0 || hour > 23) {
+        toast.error('Please select a valid hour');
+        return;
+      }
+      
+      // Ensure we're using a full hour (no minutes or seconds)
+      const dateStr = `${startDate}T${hour.toString().padStart(2, '0')}:00:00`;
       
       // Create JavaScript Date objects
       const start = new Date(dateStr);
@@ -157,6 +164,13 @@ const InterviewerSlots = () => {
       // Validate the date
       if (isNaN(start.getTime())) {
         toast.error('Invalid date or time');
+        return;
+      }
+      
+      // Ensure start time is in the future
+      const now = new Date();
+      if (start <= now) {
+        toast.error('Start time must be in the future');
         return;
       }
       
