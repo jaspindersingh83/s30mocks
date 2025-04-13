@@ -154,12 +154,22 @@ const InterviewerSlots = () => {
         return;
       }
       
-      // Ensure we're using a full hour (no minutes or seconds)
-      const dateStr = `${startDate}T${hour.toString().padStart(2, '0')}:00:00`;
+      // Create JavaScript Date objects from the date and hour
+      const [year, month, day] = startDate.split('-').map(num => parseInt(num));
       
-      // Create JavaScript Date objects
-      const start = new Date(dateStr);
-      const end = new Date(dateStr);
+      // Create date with explicit full hour (month is 0-indexed in JavaScript)
+      const start = new Date(year, month - 1, day, hour, 0, 0, 0);
+      
+      // Log the date components for debugging
+      console.log('Date components:', {
+        year, month, day, hour,
+        minutes: start.getMinutes(),
+        seconds: start.getSeconds(),
+        milliseconds: start.getMilliseconds()
+      });
+      
+      // Create end date as a new instance
+      const end = new Date(start.getTime());
       
       // Validate the date
       if (isNaN(start.getTime())) {
@@ -187,7 +197,17 @@ const InterviewerSlots = () => {
         endTime: end.toISOString(),
         interviewType
       };
+      
+      // Log detailed date information for debugging
       console.log('Sending slot creation request with payload:', payload);
+      console.log('Start date details:', {
+        date: start,
+        iso: start.toISOString(),
+        minutes: start.getMinutes(),
+        seconds: start.getSeconds(),
+        milliseconds: start.getMilliseconds(),
+        timezoneOffset: start.getTimezoneOffset()
+      });
       
       const res = await axios.post('/api/slots/interviewer', payload);
       
