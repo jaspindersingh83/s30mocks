@@ -133,6 +133,91 @@
   background-color: #e5e5e5;
 }
 
+/* Work Experience and Education Styles */
+.experience-item,
+.education-item {
+  background-color: #444;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 3px solid var(--primary-color);
+}
+
+.experience-header,
+.education-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.experience-header h3,
+.education-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.experience-item p,
+.education-item p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px;
+  transition: color 0.2s;
+}
+
+.btn-icon:hover {
+  color: #ff6b6b;
+}
+
+.add-experience-form,
+.add-education-form {
+  background-color: #444;
+  border-radius: 6px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.add-experience-form h3,
+.add-education-form h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: var(--text-color);
+  margin-bottom: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: auto;
+}
+
+.checkbox-group label {
+  margin-bottom: 0 !important;
+}
+
 @media (max-width: 768px) {
   .profile-container {
     padding: 15px;
@@ -143,5 +228,10 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
   }
 }

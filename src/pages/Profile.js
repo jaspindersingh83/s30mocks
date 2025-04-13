@@ -5,7 +5,7 @@ import AuthContext from '../context/AuthContext';
 import './Profile.css';
 
 const Profile = () => {
-  const { user, updateUser } = useContext(AuthContext);
+  const { user, updateProfile } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,7 +13,29 @@ const Profile = () => {
     linkedInUrl: '',
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    workExperiences: [],
+    education: []
+  });
+  
+  // State for new work experience and education entries
+  const [newWorkExperience, setNewWorkExperience] = useState({
+    company: '',
+    position: '',
+    startDate: '',
+    endDate: '',
+    current: false,
+    description: ''
+  });
+  
+  const [newEducation, setNewEducation] = useState({
+    school: '',
+    degree: '',
+    fieldOfStudy: '',
+    startYear: '',
+    endYear: '',
+    current: false,
+    description: ''
   });
   const [loading, setLoading] = useState(false);
   const [passwordChangeMode, setPasswordChangeMode] = useState(false);
@@ -27,7 +49,9 @@ const Profile = () => {
         linkedInUrl: user.linkedInUrl || '',
         currentPassword: '',
         newPassword: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        workExperiences: user.workExperiences || [],
+        education: user.education || []
       });
     }
   }, [user]);
@@ -49,7 +73,9 @@ const Profile = () => {
       const updateData = {
         name: formData.name,
         phone: formData.phone,
-        linkedInUrl: formData.linkedInUrl
+        linkedInUrl: formData.linkedInUrl,
+        workExperiences: formData.workExperiences,
+        education: formData.education
       };
       
       // Add password fields if in password change mode
@@ -67,7 +93,7 @@ const Profile = () => {
       const response = await axios.put('/api/users/profile', updateData);
       
       // Update user in context
-      updateUser(response.data);
+      updateProfile(response.data);
       
       toast.success('Profile updated successfully');
       
@@ -219,6 +245,350 @@ const Profile = () => {
               </button>
             </>
           )}
+        </div>
+        
+        {/* Work Experience Section */}
+        <div className="form-section">
+          <h2>Work Experience</h2>
+          
+          {formData.workExperiences.map((exp, index) => (
+            <div key={index} className="experience-item">
+              <div className="experience-header">
+                <h3>{exp.company} - {exp.position}</h3>
+                <button 
+                  type="button" 
+                  className="btn-icon" 
+                  onClick={() => {
+                    const updatedExperiences = [...formData.workExperiences];
+                    updatedExperiences.splice(index, 1);
+                    setFormData({
+                      ...formData,
+                      workExperiences: updatedExperiences
+                    });
+                  }}
+                >
+                  <i className="fas fa-trash"></i>
+                </button>
+              </div>
+              <p>
+                {new Date(exp.startDate).toLocaleDateString()} - 
+                {exp.current ? 'Present' : new Date(exp.endDate).toLocaleDateString()}
+              </p>
+              <p>{exp.description}</p>
+            </div>
+          ))}
+          
+          {/* Add New Work Experience Form */}
+          <div className="add-experience-form">
+            <h3>Add New Work Experience</h3>
+            <div className="form-group">
+              <label htmlFor="company">Company</label>
+              <input
+                type="text"
+                id="company"
+                name="company"
+                value={newWorkExperience.company}
+                onChange={(e) => setNewWorkExperience({
+                  ...newWorkExperience,
+                  company: e.target.value
+                })}
+                placeholder="Company name"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="position">Position</label>
+              <input
+                type="text"
+                id="position"
+                name="position"
+                value={newWorkExperience.position}
+                onChange={(e) => setNewWorkExperience({
+                  ...newWorkExperience,
+                  position: e.target.value
+                })}
+                placeholder="Job title"
+              />
+            </div>
+            
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="startDate">Start Date</label>
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={newWorkExperience.startDate}
+                  onChange={(e) => setNewWorkExperience({
+                    ...newWorkExperience,
+                    startDate: e.target.value
+                  })}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="endDate">End Date</label>
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={newWorkExperience.endDate}
+                  onChange={(e) => setNewWorkExperience({
+                    ...newWorkExperience,
+                    endDate: e.target.value
+                  })}
+                  disabled={newWorkExperience.current}
+                />
+              </div>
+            </div>
+            
+            <div className="form-group checkbox-group">
+              <input
+                type="checkbox"
+                id="currentJob"
+                name="currentJob"
+                checked={newWorkExperience.current}
+                onChange={(e) => setNewWorkExperience({
+                  ...newWorkExperience,
+                  current: e.target.checked,
+                  endDate: e.target.checked ? '' : newWorkExperience.endDate
+                })}
+              />
+              <label htmlFor="currentJob">I currently work here</label>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="jobDescription">Description</label>
+              <textarea
+                id="jobDescription"
+                name="jobDescription"
+                value={newWorkExperience.description}
+                onChange={(e) => setNewWorkExperience({
+                  ...newWorkExperience,
+                  description: e.target.value
+                })}
+                placeholder="Describe your responsibilities and achievements"
+                rows="3"
+              ></textarea>
+            </div>
+            
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => {
+                // Validate required fields
+                if (!newWorkExperience.company || !newWorkExperience.position || !newWorkExperience.startDate) {
+                  toast.error('Please fill in all required fields');
+                  return;
+                }
+                
+                // Add new experience to the list
+                setFormData({
+                  ...formData,
+                  workExperiences: [
+                    ...formData.workExperiences,
+                    newWorkExperience
+                  ]
+                });
+                
+                // Reset form
+                setNewWorkExperience({
+                  company: '',
+                  position: '',
+                  startDate: '',
+                  endDate: '',
+                  current: false,
+                  description: ''
+                });
+              }}
+            >
+              Add Experience
+            </button>
+          </div>
+        </div>
+        
+        {/* Education Section */}
+        <div className="form-section">
+          <h2>Education</h2>
+          
+          {formData.education.map((edu, index) => (
+            <div key={index} className="education-item">
+              <div className="education-header">
+                <h3>{edu.school} - {edu.degree}</h3>
+                <button 
+                  type="button" 
+                  className="btn-icon" 
+                  onClick={() => {
+                    const updatedEducation = [...formData.education];
+                    updatedEducation.splice(index, 1);
+                    setFormData({
+                      ...formData,
+                      education: updatedEducation
+                    });
+                  }}
+                >
+                  <i className="fas fa-trash"></i>
+                </button>
+              </div>
+              <p>
+                {edu.startYear} - {edu.current ? 'Present' : edu.endYear}
+                {edu.fieldOfStudy ? ` • ${edu.fieldOfStudy}` : ''}
+              </p>
+              <p>{edu.description}</p>
+            </div>
+          ))}
+          
+          {/* Add New Education Form */}
+          <div className="add-education-form">
+            <h3>Add New Education</h3>
+            <div className="form-group">
+              <label htmlFor="school">School/University</label>
+              <input
+                type="text"
+                id="school"
+                name="school"
+                value={newEducation.school}
+                onChange={(e) => setNewEducation({
+                  ...newEducation,
+                  school: e.target.value
+                })}
+                placeholder="School or university name"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="degree">Degree</label>
+              <input
+                type="text"
+                id="degree"
+                name="degree"
+                value={newEducation.degree}
+                onChange={(e) => setNewEducation({
+                  ...newEducation,
+                  degree: e.target.value
+                })}
+                placeholder="e.g., Bachelor of Science"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="fieldOfStudy">Field of Study</label>
+              <input
+                type="text"
+                id="fieldOfStudy"
+                name="fieldOfStudy"
+                value={newEducation.fieldOfStudy}
+                onChange={(e) => setNewEducation({
+                  ...newEducation,
+                  fieldOfStudy: e.target.value
+                })}
+                placeholder="e.g., Computer Science"
+              />
+            </div>
+            
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="startYear">Start Year</label>
+                <input
+                  type="number"
+                  id="startYear"
+                  name="startYear"
+                  value={newEducation.startYear}
+                  onChange={(e) => setNewEducation({
+                    ...newEducation,
+                    startYear: e.target.value
+                  })}
+                  min="1900"
+                  max="2099"
+                  step="1"
+                  placeholder="YYYY"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="endYear">End Year</label>
+                <input
+                  type="number"
+                  id="endYear"
+                  name="endYear"
+                  value={newEducation.endYear}
+                  onChange={(e) => setNewEducation({
+                    ...newEducation,
+                    endYear: e.target.value
+                  })}
+                  min="1900"
+                  max="2099"
+                  step="1"
+                  placeholder="YYYY"
+                  disabled={newEducation.current}
+                />
+              </div>
+            </div>
+            
+            <div className="form-group checkbox-group">
+              <input
+                type="checkbox"
+                id="currentEducation"
+                name="currentEducation"
+                checked={newEducation.current}
+                onChange={(e) => setNewEducation({
+                  ...newEducation,
+                  current: e.target.checked,
+                  endYear: e.target.checked ? '' : newEducation.endYear
+                })}
+              />
+              <label htmlFor="currentEducation">I'm currently studying here</label>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="educationDescription">Description</label>
+              <textarea
+                id="educationDescription"
+                name="educationDescription"
+                value={newEducation.description}
+                onChange={(e) => setNewEducation({
+                  ...newEducation,
+                  description: e.target.value
+                })}
+                placeholder="Describe your studies, achievements, etc."
+                rows="3"
+              ></textarea>
+            </div>
+            
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => {
+                // Validate required fields
+                if (!newEducation.school || !newEducation.degree || !newEducation.startYear) {
+                  toast.error('Please fill in all required fields');
+                  return;
+                }
+                
+                // Add new education to the list
+                setFormData({
+                  ...formData,
+                  education: [
+                    ...formData.education,
+                    newEducation
+                  ]
+                });
+                
+                // Reset form
+                setNewEducation({
+                  school: '',
+                  degree: '',
+                  fieldOfStudy: '',
+                  startYear: '',
+                  endYear: '',
+                  current: false,
+                  description: ''
+                });
+              }}
+            >
+              Add Education
+            </button>
+          </div>
         </div>
         
         <div className="form-actions">
