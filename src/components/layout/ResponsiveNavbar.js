@@ -30,7 +30,11 @@ const ResponsiveNavbar = () => {
         </Link>
         
         <div className="menu-icon" onClick={toggleMenu}>
-          <i className={isOpen ? 'fas fa-times' : 'fas fa-bars'} />
+          <div className={isOpen ? 'hamburger-icon open' : 'hamburger-icon'}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
         
         <ul className={isOpen ? 'nav-menu active' : 'nav-menu'}>
@@ -104,7 +108,7 @@ const ResponsiveNavbar = () => {
               
               <li className="nav-item user-info">
                 <span>
-                  {user?.user?.name || user?.name || 'User'} ({user?.user?.role || user?.role || 'user'})
+                  {user?.user?.name || user?.name || 'User'}
                 </span>
               </li>
             </>

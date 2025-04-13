@@ -33,9 +33,8 @@
 
 .menu-icon {
   display: none;
-  color: var(--text-color);
-  font-size: 1.8rem;
   cursor: pointer;
+  padding: 10px;
 }
 
 .nav-menu {
@@ -86,7 +85,37 @@
 .user-info {
   color: var(--text-color);
   padding: 0 10px;
-  font-style: italic;
+}
+
+/* Hamburger Icon Styles */
+.hamburger-icon {
+  width: 30px;
+  height: 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hamburger-icon span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: var(--text-color);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.hamburger-icon.open span:nth-child(1) {
+  transform: translateY(10px) rotate(45deg);
+}
+
+.hamburger-icon.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-icon.open span:nth-child(3) {
+  transform: translateY(-10px) rotate(-45deg);
 }
 
 /* Mobile Responsive Styles */
@@ -130,12 +159,13 @@
   }
 
   .menu-icon {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(-100%, 60%);
-    font-size: 1.8rem;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
     cursor: pointer;
   }
 
