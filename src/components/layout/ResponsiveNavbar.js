@@ -65,7 +65,7 @@ const ResponsiveNavbar = () => {
                   </li>
                 </>
               )}
-              {isCandidate && (
+              {(isCandidate || isAdmin) && (
                 <>
                   <li className="nav-item">
                     <Link to="/slots/available" className="nav-link" onClick={closeMenu}>
