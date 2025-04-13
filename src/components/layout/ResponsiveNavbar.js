@@ -52,12 +52,7 @@ const ResponsiveNavbar = () => {
                     <Link to="/admin/problems" className="nav-link" onClick={closeMenu}>
                       Manage Problems
                     </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/admin/slots" className="nav-link" onClick={closeMenu}>
-                      Manage Slots
-                    </Link>
-                  </li>
+                  </li> 
                   <li className="nav-item">
                     <Link to="/admin/users" className="nav-link" onClick={closeMenu}>
                       Manage Users
@@ -73,7 +68,7 @@ const ResponsiveNavbar = () => {
               {isCandidate && (
                 <>
                   <li className="nav-item">
-                    <Link to="/slots" className="nav-link" onClick={closeMenu}>
+                    <Link to="/slots/available" className="nav-link" onClick={closeMenu}>
                       Book Slot
                     </Link>
                   </li>
