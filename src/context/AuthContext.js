@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { jwtDecode } from 'jwt-decode';
 
 export const AuthContext = createContext();
@@ -12,6 +12,12 @@ export const AuthProvider = ({ children }) => {
   // Load user on initial render
   useEffect(() => {
     const loadUser = async () => {
+    // Check if we have a token in localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
       try {
         setLoading(true);
         // First check localStorage for user data
@@ -23,7 +29,7 @@ export const AuthProvider = ({ children }) => {
         }
         
         // Then fetch the latest user data from the server
-        const res = await axios.get('/api/auth/me');
+        const res = await api.get('/api/auth/me');
         console.log('Loaded user data:', res.data);
         setUser(res.data);
         
@@ -48,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.post('/api/auth/register', userData);
+      const res = await api.post('/api/auth/register', userData);
       setUser(res.data);
       return true;
     } catch (err) {
@@ -64,10 +70,18 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.post('/api/auth/login', { email, password });
+      const res = await api.post('/api/auth/login', { email, password });
+      
+      // Store token in localStorage
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+      }
       setUser(res.data);
-      // Store user data in localStorage for persistence
+      // Store user data and token in localStorage for persistence
       localStorage.setItem('user', JSON.stringify(res.data.user));
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+      }
       return true;
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -80,7 +94,10 @@ export const AuthProvider = ({ children }) => {
   // Logout user
   const logout = async () => {
     try {
-      await axios.post('/api/auth/logout');
+      await api.post('/api/auth/logout');
+      
+      // Remove token from localStorage
+      localStorage.removeItem('token');
       setUser(null);
       // Remove user data from localStorage
       localStorage.removeItem('user');
@@ -98,7 +115,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.put('/api/users/profile', userData);
+      const res = await api.put('/api/users/profile', userData);
       setUser(res.data);
       return true;
     } catch (err) {
@@ -119,7 +136,7 @@ export const AuthProvider = ({ children }) => {
       const decodedToken = jwtDecode(credentialResponse.credential);
       
       // Send the token to the backend for verification and user creation/login
-      const res = await axios.post('/api/auth/google', {
+      const res = await api.post('/api/auth/google', {
         credential: credentialResponse.credential,
         email: decodedToken.email,
         name: decodedToken.name,
@@ -127,8 +144,11 @@ export const AuthProvider = ({ children }) => {
       });
       
       setUser(res.data);
-      // Store user data in localStorage for persistence
+      // Store user data and token in localStorage for persistence
       localStorage.setItem('user', JSON.stringify(res.data.user));
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+      }
       return true;
     } catch (err) {
       setError(err.response?.data?.message || 'Google login failed');
