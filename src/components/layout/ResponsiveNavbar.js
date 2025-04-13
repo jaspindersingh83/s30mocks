@@ -87,7 +87,7 @@ const ResponsiveNavbar = () => {
               </li>
               
               <li className="nav-item">
-                <button onClick={handleLogout} className="nav-link">
+                <button onClick={handleLogout} className= "nav-link-btn">
                   Logout
                 </button>
               </li>
