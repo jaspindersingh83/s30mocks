@@ -70,15 +70,6 @@ const ResponsiveNavbar = () => {
                   </li>
                 </>
               )}
-              
-              {isInterviewer && (
-                <li className="nav-item">
-                  <Link to="/interviewer/schedule" className="nav-link" onClick={closeMenu}>
-                    My Schedule
-                  </Link>
-                </li>
-              )}
-              
               {isCandidate && (
                 <>
                   <li className="nav-item">
