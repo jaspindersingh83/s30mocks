@@ -146,12 +146,19 @@ const InterviewerSlots = () => {
       }
       
       // For single slot
-      const [year, month, day] = startDate.split('-');
-      const hour = parseInt(startHour);
+      // Use a more reliable approach to create the date
+      // First create a date string in ISO format
+      const dateStr = `${startDate}T${startHour.padStart(2, '0')}:00:00`;
       
-      // Create JavaScript Date object (month is 0-indexed in JS Date)
-      const start = new Date(year, month - 1, day, hour, 0, 0, 0);
-      const end = new Date(start);
+      // Create JavaScript Date objects
+      const start = new Date(dateStr);
+      const end = new Date(dateStr);
+      
+      // Validate the date
+      if (isNaN(start.getTime())) {
+        toast.error('Invalid date or time');
+        return;
+      }
       
       // Calculate end time based on interview type
       if (interviewType === 'DSA') {
