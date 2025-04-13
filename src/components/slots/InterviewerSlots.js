@@ -146,27 +146,18 @@ const InterviewerSlots = () => {
       }
       
       // For single slot
-      // Use a more reliable approach to create the date
-      // First create a date string in ISO format
       const hour = parseInt(startHour);
       if (isNaN(hour) || hour < 0 || hour > 23) {
         toast.error('Please select a valid hour');
         return;
       }
       
-      // Create JavaScript Date objects from the date and hour
-      const [year, month, day] = startDate.split('-').map(num => parseInt(num));
+      // Create date string in ISO format
+      const dateStr = `${startDate}T${hour.toString().padStart(2, '0')}:00:00.000Z`;
       
-      // Create date with explicit full hour (month is 0-indexed in JavaScript)
-      const start = new Date(year, month - 1, day, hour, 0, 0, 0);
-      
-      // Log the date components for debugging
-      console.log('Date components:', {
-        year, month, day, hour,
-        minutes: start.getMinutes(),
-        seconds: start.getSeconds(),
-        milliseconds: start.getMilliseconds()
-      });
+      // Create date objects using ISO string with Z suffix (UTC time)
+      // This ensures the time is interpreted as UTC regardless of local timezone
+      const start = new Date(dateStr);
       
       // Create end date as a new instance
       const end = new Date(start.getTime());
@@ -191,23 +182,11 @@ const InterviewerSlots = () => {
         end.setMinutes(start.getMinutes() + 50);
       }
       
-      // Log the request payload for debugging
       const payload = {
         startTime: start.toISOString(),
         endTime: end.toISOString(),
         interviewType
       };
-      
-      // Log detailed date information for debugging
-      console.log('Sending slot creation request with payload:', payload);
-      console.log('Start date details:', {
-        date: start,
-        iso: start.toISOString(),
-        minutes: start.getMinutes(),
-        seconds: start.getSeconds(),
-        milliseconds: start.getMilliseconds(),
-        timezoneOffset: start.getTimezoneOffset()
-      });
       
       const res = await axios.post('/api/slots/interviewer', payload);
       
@@ -225,12 +204,6 @@ const InterviewerSlots = () => {
       loadSlots();
     } catch (err) {
       console.error('Error creating slot:', err);
-      // Log detailed error information
-      if (err.response) {
-        console.error('Error response data:', err.response.data);
-        console.error('Error response status:', err.response.status);
-        console.error('Error response headers:', err.response.headers);
-      }
       toast.error(err.response?.data?.message || 'Failed to create slot');
     }
   };
