@@ -13,7 +13,8 @@
   font-size: 24px;
 }
 
-.slot-form-container, .meeting-link-container {
+.slot-form-container,
+.meeting-link-container {
   background-color: var(--app-background);
   padding: 20px;
   border-radius: 8px;
@@ -22,7 +23,8 @@
   overflow: hidden;
 }
 
-.slot-form-container h3, .meeting-link-container h3 {
+.slot-form-container h3,
+.meeting-link-container h3 {
   color: var(--text-color);
   margin-bottom: 15px;
   font-size: 18px;
@@ -50,16 +52,16 @@
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .form-group {
     width: 100%;
   }
-  
+
   .button-group {
     width: 100%;
     margin-top: 10px;
   }
-  
+
   .button-group button {
     width: 100%;
   }
@@ -124,7 +126,7 @@
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .filter-container button {
     width: 100%;
     margin-top: 10px;
@@ -135,7 +137,6 @@
   display: flex;
   flex-direction: column;
   min-width: 200px;
- 
 }
 
 .filter-group label {
@@ -184,7 +185,7 @@
   .slot-card {
     padding: 12px;
   }
-  
+
   .slot-card button {
     width: 100%;
     margin-top: 10px;
@@ -288,7 +289,8 @@
   background-color: #d32f2f;
 }
 
-.loading, .no-slots {
+.loading,
+.no-slots {
   text-align: center;
   padding: 30px;
   color: #666;
@@ -308,7 +310,10 @@
   color: var(--text-color);
 }
 
-.interviewer-info, .slot-duration, .slot-type, .slot-price {
+.interviewer-info,
+.slot-duration,
+.slot-type,
+.slot-price {
   font-size: 14px;
 }
 
@@ -351,11 +356,11 @@
   .slot-form {
     flex-direction: column;
   }
-  
+
   .slots-list {
     grid-template-columns: 1fr;
   }
-  
+
   .filter-container {
     flex-direction: column;
     align-items: stretch;
@@ -444,4 +449,23 @@
   color: var(--text-secondary);
   font-style: italic;
   margin: 15px 0;
+}
+
+/* LinkedIn profile link styling */
+.interviewer-linkedin-link {
+  color: #0077b5;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.interviewer-linkedin-link:hover {
+  color: #0056a3;
+  text-decoration: underline;
+}
+
+.linkedin-icon {
+  margin-left: 5px;
+  font-size: 0.9em;
 }

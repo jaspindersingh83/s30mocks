@@ -74,6 +74,7 @@ const AvailableSlots = () => {
             id: slot.interviewer._id,
             name: slot.interviewer.name,
             email: slot.interviewer.email,
+            linkedinProfile: slot.interviewer.linkedinProfile || "",
             averageRating: slot.interviewer.averageRating || 0,
             ratingsCount: slot.interviewer.ratingsCount || 0,
           });
@@ -181,6 +182,24 @@ const AvailableSlots = () => {
         </span>
       </div>
     );
+  };
+
+  // Render interviewer name with LinkedIn profile link if available
+  const renderInterviewerName = (interviewer) => {
+    if (interviewer.linkedinProfile) {
+      return (
+        <a
+          href={interviewer.linkedinProfile}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="interviewer-linkedin-link"
+          title="View LinkedIn Profile"
+        >
+          {interviewer.name} <i className="linkedin-icon">🔗</i>
+        </a>
+      );
+    }
+    return interviewer.name;
   };
 
   // Group slots by date - using local date for display grouping
@@ -298,7 +317,8 @@ const AvailableSlots = () => {
                     </div>
 
                     <div className="interviewer-info">
-                      <strong>Interviewer:</strong> {slot.interviewer.name}
+                      <strong>Interviewer:</strong>{" "}
+                      {renderInterviewerName(slot.interviewer)}
                       <div className="interviewer-rating">
                         {renderRating(
                           slot.interviewer.averageRating ||
