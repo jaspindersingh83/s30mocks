@@ -10,7 +10,7 @@ const InterviewerSlots = () => {
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState("");
   const [startHour, setStartHour] = useState("");
-  const [isRecurring, setIsRecurring] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(true);
   const [dayOfWeek, setDayOfWeek] = useState("");
   const [recurringWeeks, setRecurringWeeks] = useState(4); // Default to 4 weeks
   const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
