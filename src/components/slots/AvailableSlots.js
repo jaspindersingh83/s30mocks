@@ -208,11 +208,19 @@ const AvailableSlots = () => {
 
     slots.forEach((slot) => {
       // Convert UTC to local date for grouping
-      const date = new Date(slot.startTime).toLocaleDateString();
-      if (!grouped[date]) {
-        grouped[date] = [];
+      const slotDate = new Date(slot.startTime);
+      // Format date as YYYY-MM-DD to use as a key for grouping
+      const dateKey = slotDate.toISOString().split("T")[0];
+      // Store the actual date object for display
+      const displayDate = slotDate;
+
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = {
+          slots: [],
+          displayDate: displayDate,
+        };
       }
-      grouped[date].push(slot);
+      grouped[dateKey].slots.push(slot);
     });
 
     return grouped;
@@ -287,10 +295,10 @@ const AvailableSlots = () => {
         </div>
       ) : (
         <div className="slots-by-date">
-          {Object.entries(groupSlotsByDate()).map(([date, dateSlots]) => (
-            <div key={date} className="date-group">
+          {Object.entries(groupSlotsByDate()).map(([dateKey, groupData]) => (
+            <div key={dateKey} className="date-group">
               <h3 className="date-header">
-                {new Date(date).toLocaleDateString("en-US", {
+                {groupData.displayDate.toLocaleDateString("en-US", {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
@@ -298,7 +306,7 @@ const AvailableSlots = () => {
                 })}
               </h3>
               <div className="slots-list">
-                {dateSlots.map((slot) => (
+                {groupData.slots.map((slot) => (
                   <div key={slot._id} className="slot-card available">
                     <div className="slot-time">
                       <div>
