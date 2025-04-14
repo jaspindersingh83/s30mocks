@@ -451,21 +451,24 @@
   margin: 15px 0;
 }
 
-/* LinkedIn profile link styling */
-.interviewer-linkedin-link {
-  color: #0077b5;
+/* Interviewer name with LinkedIn icon */
+.interviewer-name-link {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  transition: color 0.2s ease;
+  color: inherit; /* Uses the same color as regular text */
 }
 
-.interviewer-linkedin-link:hover {
-  color: #0056a3;
-  text-decoration: underline;
+.interviewer-name-link:hover {
+  text-decoration: none;
+  color: inherit; /* Keep the same color on hover */
 }
 
 .linkedin-icon {
   margin-left: 5px;
-  font-size: 0.9em;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 2px;
 }

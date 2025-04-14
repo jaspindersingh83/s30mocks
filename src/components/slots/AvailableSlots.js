@@ -70,11 +70,21 @@ const AvailableSlots = () => {
       res.data.forEach((slot) => {
         if (slot.interviewer && !interviewerIds.has(slot.interviewer._id)) {
           interviewerIds.add(slot.interviewer._id);
+
+          // Store interviewer details, checking for different possible field names
+          const linkedInField =
+            slot.interviewer.linkedInUrl ||
+            slot.interviewer.linkedinProfile ||
+            slot.interviewer.linkedInProfile ||
+            slot.interviewer.linkedinUrl ||
+            slot.interviewer.linkedin ||
+            "";
+
           uniqueInterviewers.push({
             id: slot.interviewer._id,
             name: slot.interviewer.name,
             email: slot.interviewer.email,
-            linkedinProfile: slot.interviewer.linkedinProfile || "",
+            linkedInUrl: linkedInField,
             averageRating: slot.interviewer.averageRating || 0,
             ratingsCount: slot.interviewer.ratingsCount || 0,
           });
@@ -95,15 +105,11 @@ const AvailableSlots = () => {
               [interviewer.id]: ratingRes.data,
             }));
           } catch (error) {
-            console.error(
-              `Error fetching rating for interviewer ${interviewer.id}:`,
-              error
-            );
+            // Error handling without console.log
           }
         }
       });
     } catch (err) {
-      console.error("Error loading slots:", err);
       toast.error("Failed to load available slots");
     } finally {
       setLoading(false);
@@ -130,8 +136,6 @@ const AvailableSlots = () => {
       // Update local state
       setSlots(slots.filter((slot) => slot._id !== slotId));
     } catch (err) {
-      console.error("Error booking slot:", err);
-
       if (
         err.response?.status === 400 &&
         err.response?.data?.pendingInterviews
@@ -186,20 +190,36 @@ const AvailableSlots = () => {
 
   // Render interviewer name with LinkedIn profile link if available
   const renderInterviewerName = (interviewer) => {
-    if (interviewer.linkedinProfile) {
+    // Check if LinkedIn URL exists and is a valid URL
+    if (interviewer.linkedInUrl && isValidUrl(interviewer.linkedInUrl)) {
       return (
         <a
-          href={interviewer.linkedinProfile}
+          href={interviewer.linkedInUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="interviewer-linkedin-link"
+          className="interviewer-name-link"
           title="View LinkedIn Profile"
         >
-          {interviewer.name} <i className="linkedin-icon">🔗</i>
+          {interviewer.name}{" "}
+          <img
+            src="/linkedin-icon.png"
+            alt="LinkedIn"
+            className="linkedin-icon"
+          />
         </a>
       );
     }
     return interviewer.name;
+  };
+
+  // Helper function to validate URLs
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
   };
 
   // Group slots by date - using local date for display grouping
@@ -241,23 +261,21 @@ const AvailableSlots = () => {
           />
         </div>
 
-        {!isCandidate && (
-          <div className="filter-group">
-            <label htmlFor="interviewerFilter">Filter by Interviewer:</label>
-            <select
-              id="interviewerFilter"
-              value={selectedInterviewer}
-              onChange={(e) => setSelectedInterviewer(e.target.value)}
-            >
-              <option value="">All Interviewers</option>
-              {interviewers.map((interviewer) => (
-                <option key={interviewer.id} value={interviewer.id}>
-                  {interviewer.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        <div className="filter-group">
+          <label htmlFor="interviewerFilter">Filter by Interviewer:</label>
+          <select
+            id="interviewerFilter"
+            value={selectedInterviewer}
+            onChange={(e) => setSelectedInterviewer(e.target.value)}
+          >
+            <option value="">All Interviewers</option>
+            {interviewers.map((interviewer) => (
+              <option key={interviewer.id} value={interviewer.id}>
+                {interviewer.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div className="filter-group">
           <label htmlFor="typeFilter">Filter by Interview Type:</label>
