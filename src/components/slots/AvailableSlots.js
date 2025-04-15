@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import AuthContext from "../../context/AuthContext";
+import api from "../../utils/api";
 import "./Slots.css";
 
 const AvailableSlots = () => {
@@ -60,7 +60,7 @@ const AvailableSlots = () => {
         url += `?${params.join("&")}`;
       }
 
-      const res = await axios.get(url);
+      const res = await api.get(url);
       setSlots(res.data);
 
       // Extract unique interviewers from slots
@@ -97,7 +97,7 @@ const AvailableSlots = () => {
       uniqueInterviewers.forEach(async (interviewer) => {
         if (interviewer.averageRating === 0) {
           try {
-            const ratingRes = await axios.get(
+            const ratingRes = await api.get(
               `/api/ratings/interviewer/${interviewer.id}/average`
             );
             setInterviewerRatings((prev) => ({
@@ -110,7 +110,8 @@ const AvailableSlots = () => {
         }
       });
     } catch (err) {
-      toast.error("Failed to load available slots");
+      console.error("Failed to load slots:", err.response?.data || err.message);
+      toast.error(err.response?.data?.message || "Failed to load available slots");
     } finally {
       setLoading(false);
     }
@@ -128,7 +129,7 @@ const AvailableSlots = () => {
     }
 
     try {
-      await axios.post(`/api/slots/book/${slotId}`);
+      await api.post(`/api/slots/book/${slotId}`);
       toast.success(
         "Slot booked successfully! Check your interviews page for details."
       );
