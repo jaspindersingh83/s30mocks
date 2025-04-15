@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-section">
           <h3>S30 Mocks</h3>
-          <p>Affordable DSA and System Design Mocks with MAANG Engineers</p>
+          <p>Affordable DSA and System Design Mocks with FAANG Engineers</p>
         </div>
 
         <div className="footer-section">
