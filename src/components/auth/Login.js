@@ -1,17 +1,15 @@
-import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
-import AuthContext from "../../context/AuthContext";
-import api from "../../utils/api";
-import "./Auth.css";
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import AuthContext from '../../context/AuthContext';
+import './Auth.css';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: ''
   });
   const [formErrors, setFormErrors] = useState({});
-  const [resendStatus, setResendStatus] = useState("");
   const { login, googleLogin, loading, error } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -21,86 +19,45 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     // Clear error when user starts typing
     if (formErrors[e.target.name]) {
-      setFormErrors({ ...formErrors, [e.target.name]: "" });
-    }
-  };
-
-  const handleResendVerification = async () => {
-    try {
-      setResendStatus("sending");
-      await api.post("/api/auth/resend-verification", { email });
-      setResendStatus("sent");
-    } catch (err) {
-      setResendStatus("error");
+      setFormErrors({ ...formErrors, [e.target.name]: '' });
     }
   };
 
   const validateForm = () => {
     const errors = {};
-
+    
     if (!email.trim()) {
-      errors.email = "Email is required";
+      errors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = "Email is invalid";
+      errors.email = 'Email is invalid';
     }
-
+    
     if (!password) {
-      errors.password = "Password is required";
+      errors.password = 'Password is required';
     }
-
+    
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (!validateForm()) return;
-
+    
     const success = await login(email, password);
     if (success) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
-  };
-
-  const renderResendVerification = () => {
-    if (error?.includes("verify your email")) {
-      return (
-        <div className="resend-verification">
-          <p>Haven't received the verification email?</p>
-          {resendStatus === "sending" ? (
-            <p>Sending verification email...</p>
-          ) : resendStatus === "sent" ? (
-            <p className="success">
-              Verification email sent! Please check your inbox.
-            </p>
-          ) : resendStatus === "error" ? (
-            <p className="error">
-              Failed to send verification email. Please try again.
-            </p>
-          ) : (
-            <button
-              type="button"
-              onClick={handleResendVerification}
-              className="resend-button"
-            >
-              Resend Verification Email
-            </button>
-          )}
-        </div>
-      );
-    }
-    return null;
   };
 
   return (
     <div className="auth-container">
       <div className="auth-card">
         <h2>Login to Your Account</h2>
-
+        
         {error && <div className="auth-error">{error}</div>}
-        {renderResendVerification()}
-
+        
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
@@ -111,13 +68,11 @@ const Login = () => {
               value={email}
               onChange={handleChange}
               placeholder="Enter your email"
-              className={formErrors.email ? "error" : ""}
+              className={formErrors.email ? 'error' : ''}
             />
-            {formErrors.email && (
-              <span className="error-message">{formErrors.email}</span>
-            )}
+            {formErrors.email && <span className="error-message">{formErrors.email}</span>}
           </div>
-
+          
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
@@ -127,32 +82,34 @@ const Login = () => {
               value={password}
               onChange={handleChange}
               placeholder="Enter your password"
-              className={formErrors.password ? "error" : ""}
+              className={formErrors.password ? 'error' : ''}
             />
-            {formErrors.password && (
-              <span className="error-message">{formErrors.password}</span>
-            )}
+            {formErrors.password && <span className="error-message">{formErrors.password}</span>}
           </div>
-
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+          
+          <button 
+            type="submit" 
+            className="auth-button"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-
+        
         <div className="auth-divider">
           <span>OR</span>
         </div>
-
+        
         <div className="google-login-container">
           <GoogleLogin
             onSuccess={async (credentialResponse) => {
               const success = await googleLogin(credentialResponse);
               if (success) {
-                navigate("/dashboard");
+                navigate('/dashboard');
               }
             }}
             onError={() => {
-              console.error("Google Login Failed");
+              console.error('Google Login Failed');
             }}
             useOneTap
             theme="filled_black"
@@ -161,7 +118,7 @@ const Login = () => {
             logo_alignment="center"
           />
         </div>
-
+        
         <div className="auth-links">
           <p>
             Don't have an account? <Link to="/register">Register</Link>
