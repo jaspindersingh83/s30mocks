@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
-import './Home.css';
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
+import "./Home.css";
 
 const Home = () => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -11,10 +11,7 @@ const Home = () => {
       <section className="hero">
         <div className="hero-content">
           <h1>Elevate Your Interview Skills</h1>
-          <p>
-            Practice with experienced interviewers and get real-time feedback to
-            ace your next technical interview.
-          </p>
+          <p>Affordable DSA and System Design Mocks with MAANG Engineers</p>
           {!isAuthenticated ? (
             <div className="hero-buttons">
               <Link to="/register" className="btn btn-primary">
@@ -47,8 +44,8 @@ const Home = () => {
           <div className="feature-card">
             <h3>Detailed Feedback</h3>
             <p>
-              Receive comprehensive feedback on your performance to identify areas
-              for improvement.
+              Receive comprehensive feedback on your performance to identify
+              areas for improvement.
             </p>
           </div>
           <div className="feature-card">
@@ -72,24 +69,35 @@ const Home = () => {
           <div className="step">
             <div className="step-number">2</div>
             <h3>Book an Interview</h3>
-            <p>Browse interviewers and schedule a mock interview at your convenience.</p>
+            <p>
+              Browse interviewers and schedule a mock interview at your
+              convenience.
+            </p>
           </div>
           <div className="step">
             <div className="step-number">3</div>
             <h3>Attend & Improve</h3>
-            <p>Participate in the mock interview and receive valuable feedback.</p>
+            <p>
+              Participate in the mock interview and receive valuable feedback.
+            </p>
           </div>
           <div className="step">
             <div className="step-number">4</div>
             <h3>Make Payment</h3>
-            <p>Pay directly to the interviewer using UPI by scanning their QR code.</p>
+            <p>
+              Pay directly to the interviewer using UPI by scanning their QR
+              code.
+            </p>
           </div>
         </div>
       </section>
 
       <section className="cta">
         <h2>Ready to Ace Your Next Interview?</h2>
-        <p>Join thousands of candidates who have improved their interview skills with S30 Mocks.</p>
+        <p>
+          Join thousands of candidates who have improved their interview skills
+          with S30 Mocks.
+        </p>
         {!isAuthenticated ? (
           <Link to="/register" className="btn btn-primary">
             Get Started Now
