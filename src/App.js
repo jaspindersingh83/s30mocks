@@ -56,14 +56,30 @@ axios.defaults.withCredentials = true;
 
 // Auth guard component for protected routes
 const ProtectedRoute = ({ children, requiredRole }) => {
-  // Get user from localStorage and context
+  // Get token and user from localStorage
+  const token = localStorage.getItem("token");
   const userFromStorage = localStorage.getItem("user");
   let user = null;
+
+  // First check if we have a token - this is required for authentication
+  if (!token) {
+    console.log("No token found, redirecting to login");
+    return <Navigate to="/login" />;
+  }
 
   try {
     // Only parse if userFromStorage exists and is not the string "undefined"
     if (userFromStorage && userFromStorage !== "undefined") {
-      user = JSON.parse(userFromStorage);
+      const parsedUser = JSON.parse(userFromStorage);
+      
+      // Handle both possible data structures: direct user object or nested in user property
+      if (parsedUser.role) {
+        // Direct user object
+        user = parsedUser;
+      } else if (parsedUser.user && parsedUser.user.role) {
+        // Nested user object
+        user = parsedUser.user;
+      }
     }
   } catch (error) {
     console.error("Error parsing user from localStorage:", error);
@@ -72,11 +88,13 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   }
 
   if (!user) {
+    console.log("No valid user data found, redirecting to login");
     return <Navigate to="/login" />;
   }
 
   // Check if user has required role
   if (requiredRole) {
+    console.log("Checking role requirement:", requiredRole, "vs user role:", user.role);
     // Special case for admin route
     if (requiredRole === "admin" && user.role === "admin") {
       return children;
@@ -84,6 +102,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 
     // For non-admin routes, check if user has required role or is admin
     if (user.role !== requiredRole && user.role !== "admin") {
+      console.log("User doesn't have required role, redirecting to dashboard");
       return <Navigate to="/dashboard" />;
     }
   }

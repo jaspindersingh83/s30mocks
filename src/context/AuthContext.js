@@ -31,11 +31,15 @@ export const AuthProvider = ({ children }) => {
         // Then fetch the latest user data from the server
         const res = await api.get('/api/auth/me');
         console.log('Loaded user data:', res.data);
-        setUser(res.data);
         
-        // Update localStorage with the latest data
+        // Ensure consistent data structure
         if (res.data && res.data.user) {
+          setUser(res.data);
           localStorage.setItem('user', JSON.stringify(res.data.user));
+        } else if (res.data) {
+          // If the response doesn't have a nested user object
+          setUser({ user: res.data });
+          localStorage.setItem('user', JSON.stringify(res.data));
         }
       } catch (err) {
         console.error('Failed to load user:', err);
@@ -76,9 +80,20 @@ export const AuthProvider = ({ children }) => {
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
       }
-      setUser(res.data);
-      // Store user data and token in localStorage for persistence
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      
+      // Ensure consistent data structure for user state and localStorage
+      if (res.data && res.data.user) {
+        setUser(res.data);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+      } else {
+        // Handle case where user data might not be nested
+        console.warn('Login response structure unexpected:', res.data);
+        setUser(res.data);
+        // Store whatever user data we have
+        if (res.data) {
+          localStorage.setItem('user', JSON.stringify(res.data));
+        }
+      }
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
       }
@@ -143,9 +158,20 @@ export const AuthProvider = ({ children }) => {
         picture: decodedToken.picture
       });
       
-      setUser(res.data);
-      // Store user data and token in localStorage for persistence
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      // Ensure consistent data structure for user state and localStorage
+      if (res.data && res.data.user) {
+        setUser(res.data);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+      } else {
+        // Handle case where user data might not be nested
+        console.warn('Google login response structure unexpected:', res.data);
+        setUser(res.data);
+        // Store whatever user data we have
+        if (res.data) {
+          localStorage.setItem('user', JSON.stringify(res.data));
+        }
+      }
+      
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
       }
