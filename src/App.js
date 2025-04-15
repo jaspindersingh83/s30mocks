@@ -54,11 +54,14 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   let user = null;
   
   try {
-    if (userFromStorage) {
+    // Only parse if userFromStorage exists and is not the string "undefined"
+    if (userFromStorage && userFromStorage !== "undefined") {
       user = JSON.parse(userFromStorage);
     }
   } catch (error) {
     console.error('Error parsing user from localStorage:', error);
+    // Clear invalid data from localStorage
+    localStorage.removeItem('user');
   }
   
   if (!user) {
