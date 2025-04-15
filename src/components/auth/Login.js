@@ -85,6 +85,9 @@ const Login = () => {
               className={formErrors.password ? 'error' : ''}
             />
             {formErrors.password && <span className="error-message">{formErrors.password}</span>}
+            <div className="forgot-password-link">
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </div>
           </div>
           
           <button 

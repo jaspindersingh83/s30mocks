@@ -122,9 +122,25 @@
 .auth-links a {
   color: var(--primary-color);
   text-decoration: none;
+  font-weight: 500;
 }
 
 .auth-links a:hover {
+  text-decoration: underline;
+}
+
+.forgot-password-link {
+  text-align: right;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.forgot-password-link a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.forgot-password-link a:hover {
   text-decoration: underline;
 }
 
