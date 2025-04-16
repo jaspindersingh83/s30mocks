@@ -66,9 +66,29 @@
 .interviews-table th,
 .interviews-table td {
   padding: 12px 15px;
-  text-align: left;
   vertical-align: middle;
   border-bottom: 1px solid #444;
+  color: var(--text-color);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.linkedin-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #0077b5;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.linkedin-icon:hover {
+  color: #00a0dc;
+  transform: scale(1.1);
 }
 
 .interviews-table th {

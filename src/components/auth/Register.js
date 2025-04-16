@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import ReCAPTCHA from 'react-google-recaptcha';
 import AuthContext from '../../context/AuthContext';
 import './Auth.css';
 
@@ -10,11 +11,13 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'candidate' // Fixed role - users can only register as candidates
+    role: 'candidate', // Fixed role - users can only register as candidates
+    recaptchaToken: ''
   });
   const [formErrors, setFormErrors] = useState({});
   const { register, googleLogin, loading, error } = useContext(AuthContext);
   const navigate = useNavigate();
+  const recaptchaRef = useRef(null);
 
   const { name, email, password, confirmPassword } = formData;
 
@@ -49,6 +52,10 @@ const Register = () => {
       errors.confirmPassword = 'Passwords do not match';
     }
     
+    if (!formData.recaptchaToken) {
+      errors.recaptcha = 'Please complete the reCAPTCHA verification';
+    }
+    
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -62,12 +69,27 @@ const Register = () => {
       name,
       email,
       password,
-      role: 'candidate' // Always register as candidate
+      role: 'candidate', // Always register as candidate
+      recaptchaToken: formData.recaptchaToken
     };
     
     const success = await register(userData);
     if (success) {
       navigate('/dashboard');
+    } else {
+      // Reset reCAPTCHA on failure
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
+      setFormData({ ...formData, recaptchaToken: '' });
+    }
+  };
+  
+  const handleRecaptchaChange = (token) => {
+    setFormData({ ...formData, recaptchaToken: token });
+    // Clear recaptcha error if it exists
+    if (formErrors.recaptcha) {
+      setFormErrors({ ...formErrors, recaptcha: '' });
     }
   };
 
@@ -100,19 +122,19 @@ const Register = () => {
         
         {error && <div className="auth-error">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="name">Name</label>
             <input
               type="text"
               id="name"
               name="name"
               value={name}
               onChange={handleChange}
-              placeholder="Enter your full name"
+              placeholder="Enter your name"
               className={formErrors.name ? 'error' : ''}
             />
-            {formErrors.name && <span className="error-message">{formErrors.name}</span>}
+            {formErrors.name && <div className="error-message">{formErrors.name}</div>}
           </div>
           
           <div className="form-group">
@@ -126,7 +148,7 @@ const Register = () => {
               placeholder="Enter your email"
               className={formErrors.email ? 'error' : ''}
             />
-            {formErrors.email && <span className="error-message">{formErrors.email}</span>}
+            {formErrors.email && <div className="error-message">{formErrors.email}</div>}
           </div>
           
           <div className="form-group">
@@ -140,7 +162,7 @@ const Register = () => {
               placeholder="Enter your password"
               className={formErrors.password ? 'error' : ''}
             />
-            {formErrors.password && <span className="error-message">{formErrors.password}</span>}
+            {formErrors.password && <div className="error-message">{formErrors.password}</div>}
           </div>
           
           <div className="form-group">
@@ -154,16 +176,20 @@ const Register = () => {
               placeholder="Confirm your password"
               className={formErrors.confirmPassword ? 'error' : ''}
             />
-            {formErrors.confirmPassword && <span className="error-message">{formErrors.confirmPassword}</span>}
+            {formErrors.confirmPassword && <div className="error-message">{formErrors.confirmPassword}</div>}
           </div>
           
-          {/* Role selection removed - all users register as candidates */}
+          <div className="form-group recaptcha-container">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'} 
+              onChange={handleRecaptchaChange}
+              theme="dark"
+            />
+            {formErrors.recaptcha && <div className="error-message">{formErrors.recaptcha}</div>}
+          </div>
           
-          <button 
-            type="submit" 
-            className="auth-button"
-            disabled={loading}
-          >
+          <button type="submit" className="auth-button" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </button>
         </form>

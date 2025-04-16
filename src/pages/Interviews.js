@@ -381,9 +381,33 @@ const Interviews = () => {
               {interviews.map((interview) => (
                 <tr key={interview._id} className={interview.status === 'scheduled' ? 'scheduled-row' : 'completed-row'}>
                   <td>
-                    {isCandidate 
-                      ? interview.interviewer.name
-                      : interview.candidate.name}
+                    <div className="user-info">
+                      {isCandidate 
+                        ? interview.interviewer.name
+                        : interview.candidate.name}
+                      {isCandidate && interview.interviewer.linkedInUrl && (
+                        <a 
+                          href={interview.interviewer.linkedInUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="linkedin-icon"
+                          title="View LinkedIn Profile"
+                        >
+                          <i className="fab fa-linkedin"></i>
+                        </a>
+                      )}
+                      {isInterviewer && interview.candidate.linkedInUrl && (
+                        <a 
+                          href={interview.candidate.linkedInUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="linkedin-icon"
+                          title="View LinkedIn Profile"
+                        >
+                          <i className="fab fa-linkedin"></i>
+                        </a>
+                      )}
+                    </div>
                   </td>
                   <td>{interview.interviewType}</td>
                   <td>{formatDate(interview.scheduledDate)}</td>

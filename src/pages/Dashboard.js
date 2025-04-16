@@ -15,11 +15,23 @@ const Dashboard = () => {
     totalEarnings: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [showLinkedInPrompt, setShowLinkedInPrompt] = useState(false);
+  const [showMeetingUrlPrompt, setShowMeetingUrlPrompt] = useState(false);
 
   // Determine user role from both context and localStorage
   useEffect(() => {
     if (user && user.user) {
       setUserRole(user.user.role);
+      
+      // Check if LinkedIn profile is missing
+      if (!user.user.linkedInUrl) {
+        setShowLinkedInPrompt(true);
+      }
+      
+      // Check if interviewer is missing default meeting URL
+      if (user.user.role === 'interviewer' && !user.user.defaultMeetingLink) {
+        setShowMeetingUrlPrompt(true);
+      }
     } else {
       // Fallback to localStorage if context doesn't have role
       const storedUser = localStorage.getItem("user");
@@ -27,6 +39,16 @@ const Dashboard = () => {
         try {
           const parsedUser = JSON.parse(storedUser);
           setUserRole(parsedUser.role);
+          
+          // Check if LinkedIn profile is missing
+          if (!parsedUser.linkedInUrl) {
+            setShowLinkedInPrompt(true);
+          }
+          
+          // Check if interviewer is missing default meeting URL
+          if (parsedUser.role === 'interviewer' && !parsedUser.defaultMeetingLink) {
+            setShowMeetingUrlPrompt(true);
+          }
         } catch (err) {
           console.error("Error parsing stored user data:", err);
         }
@@ -61,6 +83,35 @@ const Dashboard = () => {
         <h1>Welcome, {user?.name}</h1>
         <p className="user-role">{user?.role}</p>
       </div>
+      
+      {/* Profile Completion Prompts */}
+      {showLinkedInPrompt && (
+        <div className="profile-prompt linkedin-prompt">
+          <div className="prompt-content">
+            <i className="fab fa-linkedin prompt-icon"></i>
+            <div className="prompt-text">
+              <h3>Add Your LinkedIn Profile</h3>
+              <p>Connect with interviewers and candidates by adding your LinkedIn profile.</p>
+            </div>
+          </div>
+          <Link to="/profile" className="prompt-action">Add Now</Link>
+          <button className="prompt-dismiss" onClick={() => setShowLinkedInPrompt(false)}>×</button>
+        </div>
+      )}
+      
+      {showMeetingUrlPrompt && (
+        <div className="profile-prompt meeting-prompt">
+          <div className="prompt-content">
+            <i className="fas fa-video prompt-icon"></i>
+            <div className="prompt-text">
+              <h3>Set Default Meeting URL</h3>
+              <p>Make it easier to start interviews by setting a default meeting URL.</p>
+            </div>
+          </div>
+          <Link to="/profile" className="prompt-action">Add Now</Link>
+          <button className="prompt-dismiss" onClick={() => setShowMeetingUrlPrompt(false)}>×</button>
+        </div>
+      )}
 
       <div className="dashboard-stats">
         <div className="stat-card">
