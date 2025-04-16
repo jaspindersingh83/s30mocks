@@ -91,12 +91,6 @@ const ResponsiveNavbar = () => {
                   Logout
                 </button>
               </li>
-              
-              <li className="nav-item user-info">
-                <span>
-                  {user?.user?.name || user?.name || 'User'}
-                </span>
-              </li>
             </>
           ) : (
             <>

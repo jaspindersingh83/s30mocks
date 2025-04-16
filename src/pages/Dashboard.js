@@ -80,8 +80,8 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1>Welcome, {user?.name}</h1>
-        <p className="user-role">{user?.role}</p>
+        <h2>Welcome, {user?.user?.name}</h2>
+        <p className="user-role">{user?.user?.role}</p>
       </div>
       
       {/* Profile Completion Prompts */}
