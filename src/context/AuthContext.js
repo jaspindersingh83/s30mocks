@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
         
         // Then fetch the latest user data from the server
         const res = await api.get('/api/auth/me');
-        console.log('Loaded user data:', res.data);
+        // console.log('Loaded user data:', res.data);
         
         // Ensure consistent data structure
         if (res.data && res.data.user) {
@@ -87,7 +87,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(res.data.user));
       } else {
         // Handle case where user data might not be nested
-        console.warn('Login response structure unexpected:', res.data);
         setUser(res.data);
         // Store whatever user data we have
         if (res.data) {
