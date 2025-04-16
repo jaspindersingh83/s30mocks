@@ -53,29 +53,23 @@ const ResetPassword = () => {
 
   if (!isTokenValid) {
     return (
-      <div className="container mt-5">
-        <div className="row">
-          <div className="col-md-6 mx-auto">
-            <div className="card">
-              <div className="card-body text-center">
-                <h2 className="card-title mb-4">Invalid or Expired Link</h2>
-                <div className="alert alert-danger">
-                  <p>
-                    This password reset link is invalid or has expired.
-                  </p>
-                </div>
-                <p>
-                  <Link to="/forgot-password" className="btn btn-primary">
-                    Request a new reset link
-                  </Link>
-                </p>
-                <p>
-                  <Link to="/login" className="btn btn-outline-primary">
-                    Back to Login
-                  </Link>
-                </p>
-              </div>
-            </div>
+      <div className="auth-container">
+        <div className="auth-card">
+          <h2>Invalid or Expired Link</h2>
+          <div className="error-message">
+            <p>
+              This password reset link is invalid or has expired.
+            </p>
+          </div>
+          <div className="auth-actions">
+            <Link to="/forgot-password" className="auth-button">
+              Request a new reset link
+            </Link>
+          </div>
+          <div className="auth-links">
+            <p>
+              <Link to="/login">Back to Login</Link>
+            </p>
           </div>
         </div>
       </div>
@@ -84,27 +78,21 @@ const ResetPassword = () => {
 
   if (isSuccess) {
     return (
-      <div className="container mt-5">
-        <div className="row">
-          <div className="col-md-6 mx-auto">
-            <div className="card">
-              <div className="card-body text-center">
-                <h2 className="card-title mb-4">Password Reset Successful</h2>
-                <div className="alert alert-success">
-                  <p>
-                    Your password has been reset successfully.
-                  </p>
-                  <p>
-                    You will be redirected to the login page in a few seconds.
-                  </p>
-                </div>
-                <p>
-                  <Link to="/login" className="btn btn-primary">
-                    Go to Login
-                  </Link>
-                </p>
-              </div>
-            </div>
+      <div className="auth-container">
+        <div className="auth-card">
+          <h2>Password Reset Successful</h2>
+          <div className="success-message">
+            <p>
+              Your password has been reset successfully.
+            </p>
+            <p>
+              You will be redirected to the login page in a few seconds.
+            </p>
+          </div>
+          <div className="auth-actions">
+            <Link to="/login" className="auth-button">
+              Go to Login
+            </Link>
           </div>
         </div>
       </div>
@@ -112,75 +100,65 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col-md-6 mx-auto">
-          <div className="card">
-            <div className="card-body">
-              <h2 className="card-title text-center mb-4">Reset Your Password</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    className={`form-control ${password && !isPasswordValid ? "is-invalid" : ""}`}
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={isSubmitting}
-                  />
-                  {password && !isPasswordValid && (
-                    <div className="invalid-feedback">
-                      Password must be at least 6 characters
-                    </div>
-                  )}
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="confirmPassword" className="form-label">
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    className={`form-control ${confirmPassword && !doPasswordsMatch ? "is-invalid" : ""}`}
-                    id="confirmPassword"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    disabled={isSubmitting}
-                  />
-                  {confirmPassword && !doPasswordsMatch && (
-                    <div className="invalid-feedback">
-                      Passwords do not match
-                    </div>
-                  )}
-                </div>
-                <div className="d-grid gap-2">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Resetting...
-                      </>
-                    ) : (
-                      "Reset Password"
-                    )}
-                  </button>
-                </div>
-              </form>
-              <div className="text-center mt-3">
-                <Link to="/login" className="text-decoration-none">
-                  Back to Login
-                </Link>
-              </div>
-            </div>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Reset Your Password</h2>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="password">New Password</label>
+            <input
+              type="password"
+              id="password"
+              className={password && !isPasswordValid ? "error" : ""}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your new password"
+              required
+              disabled={isSubmitting}
+            />
+            {password && !isPasswordValid && (
+              <span className="error-message">
+                Password must be at least 6 characters
+              </span>
+            )}
           </div>
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm New Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              className={confirmPassword && !doPasswordsMatch ? "error" : ""}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm your new password"
+              required
+              disabled={isSubmitting}
+            />
+            {confirmPassword && !doPasswordsMatch && (
+              <span className="error-message">
+                Passwords do not match
+              </span>
+            )}
+          </div>
+          <button
+            type="submit"
+            className="auth-button"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Resetting...
+              </>
+            ) : (
+              "Reset Password"
+            )}
+          </button>
+        </form>
+        <div className="auth-links">
+          <p>
+            <Link to="/login">Back to Login</Link>
+          </p>
         </div>
       </div>
     </div>

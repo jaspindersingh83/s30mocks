@@ -161,6 +161,34 @@
   margin-bottom: 0;
 }
 
+.error-message {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.error-message p {
+  margin-bottom: 10px;
+}
+
+.error-message p:last-child {
+  margin-bottom: 0;
+}
+
+.auth-actions {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.auth-actions .auth-button {
+  display: inline-block;
+  width: auto;
+  padding: 10px 20px;
+}
+
 /* Google Login Styles */
 .auth-divider {
   display: flex;
