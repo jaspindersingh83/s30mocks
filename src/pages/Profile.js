@@ -49,11 +49,11 @@ const Profile = () => {
         phone: user.user.phone || "",
         linkedInUrl: user.user.linkedInUrl || "",
         defaultMeetingLink: user.user.defaultMeetingLink || "",
+        workExperiences: user.user.workExperiences || [],
+        education: user.user.education || [],
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
-        workExperiences: user.user.workExperiences || [],
-        education: user.user.education || [],
       });
     }
   }, [user]);
@@ -274,36 +274,42 @@ const Profile = () => {
         <div className="form-section">
           <h2>Work Experience</h2>
 
-          {formData.workExperiences.map((exp, index) => (
-            <div key={index} className="experience-item">
-              <div className="experience-header">
-                <h3>
-                  {exp.company} - {exp.position}
-                </h3>
-                <button
-                  type="button"
-                  className="btn-icon"
-                  onClick={() => {
-                    const updatedExperiences = [...formData.workExperiences];
-                    updatedExperiences.splice(index, 1);
-                    setFormData({
-                      ...formData,
-                      workExperiences: updatedExperiences,
-                    });
-                  }}
-                >
-                  <i className="fas fa-trash"></i>
-                </button>
-              </div>
-              <p>
-                {new Date(exp.startDate).toLocaleDateString()} -
-                {exp.current
-                  ? "Present"
-                  : new Date(exp.endDate).toLocaleDateString()}
-              </p>
-              <p>{exp.description}</p>
+          {formData.workExperiences && formData.workExperiences.length > 0 ? (
+            <div className="experience-list">
+              {formData.workExperiences.map((exp, index) => (
+                <div key={index} className="experience-item">
+                  <div className="experience-header">
+                    <h3>
+                      {exp.company} - {exp.position}
+                    </h3>
+                    <button
+                      type="button"
+                      className="btn-icon"
+                      onClick={() => {
+                        const updatedExperiences = [...formData.workExperiences];
+                        updatedExperiences.splice(index, 1);
+                        setFormData({
+                          ...formData,
+                          workExperiences: updatedExperiences,
+                        });
+                      }}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </div>
+                  <p>
+                    {exp.startDate ? new Date(exp.startDate).toLocaleDateString() : ''} -
+                    {exp.current
+                      ? "Present"
+                      : (exp.endDate ? new Date(exp.endDate).toLocaleDateString() : '')}
+                  </p>
+                  <p>{exp.description}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <p className="no-items-message">No work experience added yet.</p>
+          )}
 
           {/* Add New Work Experience Form */}
           <div className="add-experience-form">
@@ -454,34 +460,40 @@ const Profile = () => {
         <div className="form-section">
           <h2>Education</h2>
 
-          {formData.education.map((edu, index) => (
-            <div key={index} className="education-item">
-              <div className="education-header">
-                <h3>
-                  {edu.school} - {edu.degree}
-                </h3>
-                <button
-                  type="button"
-                  className="btn-icon"
-                  onClick={() => {
-                    const updatedEducation = [...formData.education];
-                    updatedEducation.splice(index, 1);
-                    setFormData({
-                      ...formData,
-                      education: updatedEducation,
-                    });
-                  }}
-                >
-                  <i className="fas fa-trash"></i>
-                </button>
-              </div>
-              <p>
-                {edu.startYear} - {edu.current ? "Present" : edu.endYear}
-                {edu.fieldOfStudy ? ` • ${edu.fieldOfStudy}` : ""}
-              </p>
-              <p>{edu.description}</p>
+          {formData.education && formData.education.length > 0 ? (
+            <div className="education-list">
+              {formData.education.map((edu, index) => (
+                <div key={index} className="education-item">
+                  <div className="education-header">
+                    <h3>
+                      {edu.school} - {edu.degree}
+                    </h3>
+                    <button
+                      type="button"
+                      className="btn-icon"
+                      onClick={() => {
+                        const updatedEducation = [...formData.education];
+                        updatedEducation.splice(index, 1);
+                        setFormData({
+                          ...formData,
+                          education: updatedEducation,
+                        });
+                      }}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </div>
+                  <p>
+                    {edu.startYear} - {edu.current ? "Present" : edu.endYear}
+                    {edu.fieldOfStudy ? ` • ${edu.fieldOfStudy}` : ""}
+                  </p>
+                  <p>{edu.description}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <p className="no-items-message">No education history added yet.</p>
+          )}
 
           {/* Add New Education Form */}
           <div className="add-education-form">

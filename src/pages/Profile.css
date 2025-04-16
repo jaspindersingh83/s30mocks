@@ -53,9 +53,12 @@
 .profile-container .form-section .form-group select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #444;
   border-radius: 4px;
   font-size: 16px;
+  background-color: #333;
+  color: var(--text-color);
+  box-sizing: border-box; /* Ensures padding doesn't add to width */
 }
 
 .profile-container .form-section .form-group textarea {
@@ -141,6 +144,8 @@
   padding: 15px;
   margin-bottom: 15px;
   border-left: 3px solid var(--primary-color);
+  word-break: break-word; /* Prevents long text from overflowing */
+  overflow: hidden; /* Ensures content stays within container */
 }
 
 .experience-header,
@@ -185,6 +190,7 @@
   border-radius: 6px;
   padding: 20px;
   margin-top: 20px;
+  overflow: hidden; /* Prevents content from spilling out */
 }
 
 .add-experience-form h3,
@@ -198,6 +204,12 @@
 .form-row {
   display: flex;
   gap: 15px;
+  flex-wrap: wrap; /* Added to prevent overflow */
+}
+
+.form-row .form-group {
+  flex: 1;
+  min-width: 200px; /* Ensures fields don't get too narrow */
 }
 
 .form-row .form-group {
@@ -207,15 +219,34 @@
 .checkbox-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  margin-bottom: 15px;
 }
 
 .checkbox-group input[type="checkbox"] {
   width: auto;
+  margin-right: 8px;
 }
 
 .checkbox-group label {
   margin-bottom: 0 !important;
+}
+
+/* Styling for empty state messages */
+.no-items-message {
+  color: #999;
+  font-style: italic;
+  text-align: center;
+  padding: 15px;
+  background-color: #3a3a4a;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+/* List containers for experience and education */
+.experience-list,
+.education-list {
+  margin-bottom: 20px;
 }
 
 @media (max-width: 768px) {

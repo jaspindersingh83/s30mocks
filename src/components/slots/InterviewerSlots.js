@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { DateTime } from "luxon";
 import AuthContext from "../../context/AuthContext";
 import "./Slots.css";
 
@@ -31,23 +32,26 @@ const InterviewerSlots = () => {
   // Get current date for min attribute
   const currentDate = formatDateForInput(new Date());
 
-  // Format date for display - Converts from UTC to local timezone without timezone indicator
+  // Format date for display - Converts from UTC to local timezone with timezone indicator
   const formatDate = (dateString) => {
-    const options = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      // Removed timeZoneName to hide the GMT+X:XX indicator
-    };
-    return new Date(dateString).toLocaleString("en-US", options);
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    return DateTime.fromISO(dateString)
+      .setZone(timezone)
+      .toLocaleString({
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZoneName: "short"
+      });
   };
 
-  // Convert local datetime to UTC for sending to server
+  // Convert local datetime to UTC for sending to server using Luxon
   const convertToUTC = (date, timeString) => {
     const [hours, minutes] = timeString.split(":").map(Number);
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const localDate = new Date(date);
     localDate.setHours(hours, minutes, 0, 0);
     return localDate.toISOString();
@@ -158,38 +162,49 @@ const InterviewerSlots = () => {
 
     try {
       if (isRecurring) {
-        // Create recurring slots
+        // Create recurring slots using Luxon for proper timezone handling
         const slots = [];
-        const today = new Date();
         const dayOfWeekInt = parseInt(dayOfWeek);
         const hourInt = parseInt(startHour);
-
-        // Find the next occurrence of the selected day of week
-        let nextDate = new Date();
-        const daysToAdd = (7 + dayOfWeekInt - nextDate.getDay()) % 7;
-        nextDate.setDate(nextDate.getDate() + daysToAdd);
-        nextDate.setHours(hourInt, 0, 0, 0);
-
-        // If the calculated date is in the past, add 7 days
-        if (nextDate < today) {
-          nextDate.setDate(nextDate.getDate() + 7);
+        
+        // Get interviewer's timezone
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
+        // Start with current date/time in interviewer's timezone
+        let now = DateTime.now().setZone(timezone);
+        
+        // Find the next occurrence of the selected day
+        // Luxon uses 1-7 for days (Monday-Sunday), but our UI uses 0-6 (Sunday-Saturday)
+        // Convert 0 (Sunday) to 7 for Luxon
+        const luxonDayOfWeek = dayOfWeekInt === 0 ? 7 : dayOfWeekInt;
+        
+        // Calculate days until next occurrence of selected day
+        let daysUntil = (luxonDayOfWeek - now.weekday + 7) % 7;
+        if (daysUntil === 0 && now.hour >= hourInt) {
+          daysUntil = 7; // If today is the day but hour has passed, go to next week
         }
-
+        
+        // Create the date for the first slot
+        let slotDate = now.plus({ days: daysUntil }).set({ 
+          hour: hourInt, 
+          minute: 0, 
+          second: 0, 
+          millisecond: 0 
+        });
+        
         // Create slots for the specified number of weeks
         for (let i = 0; i < recurringWeeks; i++) {
-          const slotDate = new Date(nextDate);
-          slotDate.setDate(slotDate.getDate() + i * 7);
-
-          const endDate = new Date(slotDate);
-          if (interviewType === "DSA") {
-            endDate.setMinutes(endDate.getMinutes() + 40);
-          } else {
-            endDate.setMinutes(endDate.getMinutes() + 50);
-          }
-
+          const startTime = slotDate.plus({ weeks: i });
+          
+          // Calculate end time based on interview type
+          const duration = interviewType === "DSA" ? 40 : 50;
+          const endTime = startTime.plus({ minutes: duration });
+          
+          // Store in UTC
           slots.push({
-            start: slotDate.toISOString(),
-            end: endDate.toISOString(),
+            start: startTime.toUTC().toISO(),
+            end: endTime.toUTC().toISO(),
+            timeZone: timezone
           });
         }
 

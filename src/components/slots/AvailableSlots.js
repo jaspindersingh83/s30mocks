@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
+import { DateTime } from "luxon";
 import AuthContext from "../../context/AuthContext";
 import api from "../../utils/api";
 import "./Slots.css";
@@ -14,19 +15,22 @@ const AvailableSlots = () => {
   const [dateFilter, setDateFilter] = useState("");
   const [interviewerRatings, setInterviewerRatings] = useState({});
 
-  // Format date for display - Converts from UTC to local timezone without showing timezone indicator
-  const formatDate = (dateString) => {
-    const options = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      // Remove timeZoneName to hide the GMT+X:XX indicator
-    };
-    // This automatically converts UTC to local time zone
-    return new Date(dateString).toLocaleString("en-US", options);
+  // Format date for display - Converts from UTC to local timezone with timezone indicator
+  const formatDate = (dateString, timezone) => {
+    // Use slot's timezone if available, otherwise use browser's timezone
+    const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    return DateTime.fromISO(dateString)
+      .setZone(tz)
+      .toLocaleString({
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short' // Show timezone for clarity
+      });
   };
 
   // Load available slots
@@ -329,10 +333,10 @@ const AvailableSlots = () => {
                   <div key={slot._id} className="slot-card available">
                     <div className="slot-time">
                       <div>
-                        <strong>Start:</strong> {formatDate(slot.startTime)}
+                        <strong>Start:</strong> {formatDate(slot.startTime, slot.timeZone)}
                       </div>
                       <div>
-                        <strong>End:</strong> {formatDate(slot.endTime)}
+                        <strong>End:</strong> {formatDate(slot.endTime, slot.timeZone)}
                       </div>
                     </div>
                     <div className="slot-type" data-type={slot.interviewType}>
