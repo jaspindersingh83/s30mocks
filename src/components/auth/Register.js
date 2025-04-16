@@ -182,7 +182,7 @@ const Register = () => {
           <div className="form-group recaptcha-container">
             <ReCAPTCHA
               ref={recaptchaRef}
-              sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'} 
+              sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY || '6LcqChsrAAAAAAyVppRW3nVUt6_exB7dR9EF0w0x'} 
               onChange={handleRecaptchaChange}
               theme="dark"
             />
