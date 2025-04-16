@@ -32,45 +32,52 @@ const Register = () => {
   const validateForm = () => {
     const errors = {};
     
-    if (!name.trim()) {
+    if (!formData.name.trim()) {
       errors.name = 'Name is required';
     }
     
-    if (!email.trim()) {
+    if (!formData.email.trim()) {
       errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = 'Email is invalid';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
     }
     
-    if (!password) {
+    if (!formData.password) {
       errors.password = 'Password is required';
-    } else if (password.length < 6) {
+    } else if (formData.password.length < 6) {
       errors.password = 'Password must be at least 6 characters';
     }
     
-    if (password !== confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = 'Passwords do not match';
     }
     
+    // reCAPTCHA validation temporarily disabled
+    /*
     if (!formData.recaptchaToken) {
       errors.recaptcha = 'Please complete the reCAPTCHA verification';
     }
+    */
     
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    // Validate form
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setFormErrors(formErrors);
+      return;
+    }
     
     const userData = {
       name,
       email,
       password,
       role: 'candidate', // Always register as candidate
-      recaptchaToken: formData.recaptchaToken
+      recaptchaToken: 'bypass' // Temporary bypass for reCAPTCHA
     };
     
     const success = await register(userData);
@@ -179,6 +186,7 @@ const Register = () => {
             {formErrors.confirmPassword && <div className="error-message">{formErrors.confirmPassword}</div>}
           </div>
           
+          {/* reCAPTCHA temporarily disabled
           <div className="form-group recaptcha-container">
             <ReCAPTCHA
               ref={recaptchaRef}
@@ -188,6 +196,7 @@ const Register = () => {
             />
             {formErrors.recaptcha && <div className="error-message">{formErrors.recaptcha}</div>}
           </div>
+          */}
           
           <button type="submit" className="auth-button" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
