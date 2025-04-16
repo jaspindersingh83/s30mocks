@@ -114,11 +114,12 @@ const Login = () => {
             onError={() => {
               console.error('Google Login Failed');
             }}
-            useOneTap
+            useOneTap={false}
             theme="filled_black"
             text="signin_with"
             shape="rectangular"
             logo_alignment="center"
+            type="standard"
           />
         </div>
         

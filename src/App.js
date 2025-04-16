@@ -117,7 +117,7 @@ function App() {
     "789194923854-mlpbn58i58labctabg3n15p7o9kvv4ev.apps.googleusercontent.com"; // Get from .env file
 
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID} onScriptLoadError={(err) => console.log("Google OAuth script load error:", err)} useOneTap={false}>
       <AuthProvider>
         <Router>
           <ToastContainer
