@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Link, useLocation } from 'react-router-dom';
+import { DateTime } from 'luxon';
 import AuthContext from '../context/AuthContext';
 import InterviewFeedback from '../components/feedback/InterviewFeedback';
 import FeedbackDetails from '../components/feedback/FeedbackDetails';
@@ -275,17 +276,14 @@ const Interviews = () => {
   const formatDate = (dateString) => {
     if (!dateString) return 'Not scheduled';
     
-    const options = { 
-      weekday: 'short',
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    };
-    
     try {
-      return new Date(dateString).toLocaleString('en-US', options);
+      // Get the interview timezone if available, otherwise use browser's timezone
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      
+      // Format using Luxon with clear timezone indicator (Option 1)
+      return DateTime.fromISO(dateString)
+        .setZone(timezone)
+        .toFormat("EEEE, MMMM d, yyyy 'at' h:mm a (z)");
     } catch (error) {
       console.error('Date formatting error:', error);
       return 'Invalid date';

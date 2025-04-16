@@ -32,20 +32,12 @@ const InterviewerSlots = () => {
   // Get current date for min attribute
   const currentDate = formatDateForInput(new Date());
 
-  // Format date for display - Converts from UTC to local timezone with timezone indicator
+  // Format date for display - Converts from UTC to local timezone with clear timezone indicator
   const formatDate = (dateString) => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     return DateTime.fromISO(dateString)
       .setZone(timezone)
-      .toLocaleString({
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZoneName: "short"
-      });
+      .toFormat("EEEE, MMMM d, yyyy 'at' h:mm a (z)");
   };
 
   // Convert local datetime to UTC for sending to server using Luxon

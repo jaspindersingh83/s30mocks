@@ -15,22 +15,14 @@ const AvailableSlots = () => {
   const [dateFilter, setDateFilter] = useState("");
   const [interviewerRatings, setInterviewerRatings] = useState({});
 
-  // Format date for display - Converts from UTC to local timezone with timezone indicator
+  // Format date for display - Converts from UTC to local timezone with clear timezone indicator
   const formatDate = (dateString, timezone) => {
     // Use slot's timezone if available, otherwise use browser's timezone
     const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
     
     return DateTime.fromISO(dateString)
       .setZone(tz)
-      .toLocaleString({
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZoneName: 'short' // Show timezone for clarity
-      });
+      .toFormat("EEEE, MMMM d, yyyy 'at' h:mm a (z)");
   };
 
   // Load available slots
