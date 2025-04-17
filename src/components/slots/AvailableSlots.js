@@ -342,7 +342,7 @@ const AvailableSlots = () => {
                     <div className="interviewer-info">
                       <strong>Interviewer:</strong>{" "}
                       {renderInterviewerName(slot.interviewer)}
-                      <div className="interviewer-rating">
+                      {/* <div className="interviewer-rating">
                         {renderRating(
                           slot.interviewer.averageRating ||
                             interviewerRatings[slot.interviewer._id]
@@ -359,7 +359,7 @@ const AvailableSlots = () => {
                             ? "review"
                             : "reviews"}
                         </span>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="slot-duration">
