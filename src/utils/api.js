@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+// Detect Safari browser
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 // Create an axios instance with base URL from environment variables
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000',
@@ -17,8 +20,14 @@ api.interceptors.request.use(
     
     // If token exists, add it to the headers
     if (token) {
+      // Add token to both header formats for maximum compatibility
       config.headers['x-auth-token'] = token;
       config.headers['Authorization'] = `Bearer ${token}`;
+      
+      // For Safari, ensure cookies are properly handled
+      if (isSafari) {
+        config.withCredentials = true;
+      }
     }
     
     return config;

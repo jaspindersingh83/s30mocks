@@ -163,7 +163,7 @@ const Interviews = () => {
       setStartingInterview(interview._id);
       
       // Check if meeting details already exist
-      if (interview.meetingLink && interview.meetingPassword) {
+      if (interview.meetingLink) {
         // If meeting details exist, update interview status to 'in-progress'
         await axios.put(`/api/interviews/${interview._id}/status`, { status: 'in-progress' });
         
