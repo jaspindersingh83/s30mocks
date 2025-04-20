@@ -49,7 +49,6 @@ const Interviews = () => {
       // Filter out cancelled interviews if they're somehow included
       const filteredInterviews = response.data.filter(interview => interview.status !== 'cancelled');
       setInterviews(filteredInterviews);
-      console.log(filteredInterviews);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching interviews:', error);
@@ -555,7 +554,7 @@ const Interviews = () => {
                       </div>
                     )}
                     
-                    {interview.status === 'completed' && (
+                    {(interview.status === 'completed' || interview.status === 'in-progress') && (
                       <div className="action-buttons">
                         <button 
                           className="btn-secondary"
@@ -573,7 +572,7 @@ const Interviews = () => {
                               >
                                 Provide Feedback
                               </button>
-                            ) : (
+                            ) : interview.status === 'completed' ? (
                               <button 
                                 className="btn-secondary"
                                 onClick={() => handleEditFeedback(interview)}
@@ -581,7 +580,7 @@ const Interviews = () => {
                               >
                                 Edit Feedback
                               </button>
-                            )}
+                            ) : null}
                           </>
                         )}
                         {isCandidate && (
