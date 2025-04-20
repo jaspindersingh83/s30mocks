@@ -16,7 +16,7 @@ const Interviews = () => {
   const [cancelling, setCancelling] = useState(false);
   const [ratingInterview, setRatingInterview] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState({});
-  const [feedbackStatus, setFeedbackStatus] = useState({});
+  // Removed feedbackStatus state as we're using interview.status directly
   const [feedbackDetails, setFeedbackDetails] = useState({});
   const [editingMeeting, setEditingMeeting] = useState(null);
   const [meetingLink, setMeetingLink] = useState('');
@@ -92,43 +92,10 @@ const Interviews = () => {
     }
   }, [interviews, isCandidate]);
   
-  // Fetch feedback status for interviews
-  const fetchFeedbackStatus = async () => {
-    try {
-      if (interviews.length === 0) return;
-      
-      const statusMap = {};
-      const detailsMap = {};
-      
-      // Fetch feedback for each interview
-      for (const interview of interviews) {
-        try {
-          const res = await axios.get(`/api/feedback/interview/${interview._id}`);
-          if (res.data) {
-            statusMap[interview._id] = 'provided';
-            detailsMap[interview._id] = res.data;
-          } else {
-            statusMap[interview._id] = 'pending';
-          }
-        } catch (err) {
-          // If no feedback found, mark as pending
-          statusMap[interview._id] = 'pending';
-        }
-      }
-      
-      setFeedbackStatus(statusMap);
-      setFeedbackDetails(detailsMap);
-    } catch (err) {
-      console.error('Error fetching feedback status:', err);
-    }
-  };
+  // Removed fetchFeedbackStatus function as we're using interview.status directly
   
   // Check feedback status for interviews
-  useEffect(() => {
-    if (interviews.length > 0 && (isCandidate || isInterviewer)) {
-      fetchFeedbackStatus();
-    }
-  }, [interviews, isCandidate, isInterviewer]);
+  // Removed fetchFeedbackStatus effect as we're using interview.status directly
   
   // Monitor interviews and their statuses
   useEffect(() => {
@@ -206,11 +173,21 @@ const Interviews = () => {
   };
   
   const handleViewFeedback = (interviewId) => {
-    if (feedbackDetails[interviewId]) {
-      setViewingFeedback(feedbackDetails[interviewId]);
-    } else {
-      toast.error('Feedback details not available');
-    }
+    // Always fetch the latest feedback
+    axios.get(`/api/feedback/interview/${interviewId}`)
+      .then(res => {
+        // Store the feedback details for future reference
+        const updatedDetails = { ...feedbackDetails };
+        updatedDetails[interviewId] = res.data;
+        setFeedbackDetails(updatedDetails);
+        
+        // Set the viewing feedback
+        setViewingFeedback(res.data);
+      })
+      .catch(err => {
+        console.error('Error fetching feedback:', err);
+        toast.error('Error fetching feedback details');
+      });
   };
   
   const handleProvideFeedback = (interview) => {
@@ -237,11 +214,8 @@ const Interviews = () => {
   };
   
   const handleFeedbackSuccess = () => {
-    // Refresh interviews and feedback status after feedback submission/update
+    // Refresh interviews after feedback submission/update
     fetchInterviews();
-    if (interviews.length > 0 && (isCandidate || isInterviewer)) {
-      fetchFeedbackStatus();
-    }
   };
   
   const handleOpenRatingModal = (interview) => {
@@ -436,10 +410,13 @@ const Interviews = () => {
                   )}
                   {isCandidate && (
                     <td>
-                      {feedbackStatus[interview._id] === 'pending' && (
+                      {interview.status === 'scheduled' && (
                         <span className="feedback-badge feedback-pending">Pending</span>
                       )}
-                      {feedbackStatus[interview._id] === 'provided' && (
+                      {interview.status === 'in-progress' && (
+                        <span className="feedback-badge feedback-in-progress">In Progress</span>
+                      )}
+                      {interview.status === 'completed' && (
                         <span 
                           className="feedback-badge feedback-provided"
                           onClick={() => handleViewFeedback(interview._id)}
@@ -586,7 +563,7 @@ const Interviews = () => {
                         </button>
                         {isInterviewer && (
                           <>
-                            {feedbackStatus[interview._id] === 'in-progress' ? (
+                            {interview.status === 'in-progress' ? (
                               <button 
                                 className="btn-primary"
                                 onClick={() => handleProvideFeedback(interview)}
@@ -594,7 +571,7 @@ const Interviews = () => {
                               >
                                 Provide Feedback
                               </button>
-                            ) : feedbackStatus[interview._id] === 'provided' && (
+                            ) : (
                               <button 
                                 className="btn-secondary"
                                 onClick={() => handleEditFeedback(interview)}
