@@ -586,7 +586,7 @@ const Interviews = () => {
                         </button>
                         {isInterviewer && (
                           <>
-                            {feedbackStatus[interview._id] === 'pending' ? (
+                            {feedbackStatus[interview._id] === 'in-progress' ? (
                               <button 
                                 className="btn-primary"
                                 onClick={() => handleProvideFeedback(interview)}
