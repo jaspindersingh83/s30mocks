@@ -49,6 +49,7 @@ const Interviews = () => {
       // Filter out cancelled interviews if they're somehow included
       const filteredInterviews = response.data.filter(interview => interview.status !== 'cancelled');
       setInterviews(filteredInterviews);
+      console.log(filteredInterviews);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching interviews:', error);
@@ -83,6 +84,7 @@ const Interviews = () => {
   useEffect(() => {
 
     fetchInterviews();
+
   }, [location.search]); // Re-run when URL search params change
   
   // Check payment status for each interview
