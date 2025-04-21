@@ -136,7 +136,7 @@ const PaymentVerification = () => {
               </div>
               
               <div className="payment-info">
-                <p><strong>Amount:</strong> ₹{payment.amount / 100}</p>
+                <p><strong>Amount:</strong> ₹{payment.amount}</p>
                 <p><strong>Candidate:</strong> {payment.interview?.candidate?.name || 'Unknown'}</p>
                 <p><strong>Transaction ID:</strong> {payment.transactionId}</p>
                 <p><strong>Status:</strong> <span className="status-submitted">Submitted</span></p>
