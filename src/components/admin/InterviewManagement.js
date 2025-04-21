@@ -84,8 +84,6 @@ const InterviewManagement = () => {
 
   const getPaymentBadgeClass = (status) => {
     switch (status) {
-      case "unpaid":
-        return "badge-secondary";
       case "pending":
         return "badge-warning";
       case "verified":

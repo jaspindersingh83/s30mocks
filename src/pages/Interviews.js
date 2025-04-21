@@ -66,13 +66,13 @@ const Interviews = () => {
         const response = await axios.get(`/api/payments/interview/${interview._id}`);
         
         // The server now returns an object with status even if no payment exists
-        statusMap[interview._id] = response.data.status || 'unpaid';
+        statusMap[interview._id] = response.data.status || 'pending';
         
 
       } catch (error) {
         console.error(`Error checking payment for interview ${interview._id}:`, error.message);
-        // Default to unpaid if there's an error
-        statusMap[interview._id] = 'unpaid';
+        // Default to pending if there's an error
+        statusMap[interview._id] = 'pending';
       }
     }
     
@@ -285,22 +285,22 @@ const Interviews = () => {
   }
 
   // Check if user has any pending payments
-  // Check if there are any completed interviews with unpaid status
-  const hasUnpaidCompletedInterviews = isCandidate && interviews.some(
-    interview => interview.status === 'completed' && paymentStatus[interview._id] === 'unpaid'
+  // Check if there are any completed interviews with pending status
+  const hasPendingCompletedInterviews = isCandidate && interviews.some(
+    interview => interview.status === 'completed' && paymentStatus[interview._id] === 'pending'
   );
 
   return (
     <div className="interviews-container">
       <h2>Your Interviews</h2>
       
-      {/* Warning banner for unpaid completed interviews */}
-      {hasUnpaidCompletedInterviews && (
+      {/* Warning banner for pending completed interviews */}
+      {hasPendingCompletedInterviews && (
         <div className="payment-warning-banner" id="payment-section">
           <div className="warning-icon">⚠️</div>
           <div className="warning-message">
             <h3>Payment Required</h3>
-            <p>You have unpaid completed interviews. Please make the payments to book new interviews.</p>
+            <p>You have pending payments for completed interviews. Please make the payments to book new interviews.</p>
           </div>
         </div>
       )}
@@ -593,8 +593,8 @@ const Interviews = () => {
                               Rate
                             </button>
                             
-                            {/* Show payment button for unpaid completed interviews */}
-                            {paymentStatus[interview._id] === 'unpaid' && (
+                            {/* Show payment button for pending completed interviews */}
+                            {paymentStatus[interview._id] === 'pending' && (
                               <button 
                                 onClick={() => window.location.href = `/payments/${interview._id}`}
                                 className="btn-primary"

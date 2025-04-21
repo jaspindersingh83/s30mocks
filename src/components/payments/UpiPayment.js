@@ -217,12 +217,12 @@ const UpiPayment = ({ onPaymentComplete }) => {
             <p><strong>Amount:</strong> {payment.currency || '₹'}{payment.amount}</p>
           </>
         ) : (
-          <p><strong>Amount:</strong> ₹{payment.amount / 100}</p>
+          <p><strong>Amount:</strong> ₹{payment.amount}</p>
         )}
         <p><strong>UPI ID:</strong> {payment.upiId}</p>
       </div>
       
-      {payment.qrCodeUrl && (payment.status === 'unpaid' || payment.status === 'pending' || payment.status === 'rejected') && (
+      {payment.qrCodeUrl && (payment.status === 'pending' || payment.status === 'rejected') && (
         <div className="qr-code-section">
           <h3>Scan QR Code to Pay</h3>
           <img src={payment.qrCodeUrl} alt="UPI QR Code" className="qr-code-image" />
@@ -233,7 +233,7 @@ const UpiPayment = ({ onPaymentComplete }) => {
         </div>
       )}
       
-      {(payment.status === 'unpaid' || payment.status === 'rejected') && (
+      {(payment.status === 'pending' || payment.status === 'rejected') && (
         <form onSubmit={handleSubmit} className="payment-proof-form">
           <h3>Submit Payment Proof</h3>
           
