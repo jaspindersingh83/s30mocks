@@ -11,7 +11,7 @@ const Home = () => {
       <section className="hero">
         <div className="hero-content">
           <h1>Elevate Your Interview Skills</h1>
-          <p>Affordable DSA and System Design Mocks with MAANG Engineers</p>
+          <p>Affordable DSA and System Design Mocks with FAANG Engineers</p>
           {!isAuthenticated ? (
             <div className="hero-buttons">
               <Link to="/register" className="btn btn-primary">
