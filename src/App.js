@@ -124,6 +124,19 @@ function App() {
             position="top-right"
             autoClose={5000}
             hideProgressBar={false}
+            toastClassName="toast-container"
+            theme="colored"
+            style={{ zIndex: 9999 }}
+            toastStyle={{
+              borderRadius: '4px',
+              fontFamily: 'Arial, sans-serif'
+            }}
+            progressStyle={{
+              height: '3px'
+            }}
+            progressClassName={{
+              success: 'toast-progress-success'
+            }}
           />
           <WhatsAppChat />
           <Layout>
