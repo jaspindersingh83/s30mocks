@@ -44,7 +44,16 @@ const UpiPayment = ({ onPaymentComplete }) => {
             try {
               const res = await axios.post('/api/payments/create-payment-request', { interviewId });
               console.log('New payment created:', res.data);
-              setPayment(res.data);
+              // Ensure all required fields are present in the payment object
+              setPayment({
+                _id: res.data.paymentId,
+                amount: res.data.amount,
+                currency: res.data.currency,
+                upiId: res.data.upiId,
+                qrCodeUrl: res.data.qrCodeUrl,
+                status: 'pending',
+                interview: interviewId
+              });
             } catch (createErr) {
               console.error('Error creating payment:', createErr);
               setError(createErr.response?.data?.message || 'Failed to create payment request');
@@ -58,7 +67,16 @@ const UpiPayment = ({ onPaymentComplete }) => {
               console.log('Creating new payment request after 404');
               const res = await axios.post('/api/payments/create-payment-request', { interviewId });
               console.log('New payment created after 404:', res.data);
-              setPayment(res.data);
+              // Ensure all required fields are present in the payment object
+              setPayment({
+                _id: res.data.paymentId,
+                amount: res.data.amount,
+                currency: res.data.currency,
+                upiId: res.data.upiId,
+                qrCodeUrl: res.data.qrCodeUrl,
+                status: 'pending',
+                interview: interviewId
+              });
             } catch (createErr) {
               console.error('Error creating payment after 404:', createErr);
               setError(createErr.response?.data?.message || 'Failed to create payment request');
