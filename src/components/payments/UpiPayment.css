@@ -223,3 +223,83 @@
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+
+/* QR Code Container Styles */
+.payment-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px auto;
+  max-width: 300px;
+  background-color: var(--background-color);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.qr-code-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: white;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.upi-qr-code {
+  max-width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+.payment-amount {
+  font-size: 18px;
+  margin: 10px 0;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.upi-id {
+  font-size: 14px;
+  margin: 10px 0;
+  text-align: center;
+  word-break: break-all;
+  color: var(--text-secondary);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.slot-details {
+  background-color: var(--background-color);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slot-details h3 {
+  margin-bottom: 15px;
+  color: var(--text-color);
+  border-bottom: 1px solid #555;
+  padding-bottom: 8px;
+}
+
+.slot-details p {
+  margin: 8px 0;
+  color: var(--text-color);
+}

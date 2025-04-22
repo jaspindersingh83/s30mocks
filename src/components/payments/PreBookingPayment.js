@@ -170,6 +170,7 @@ const PreBookingPayment = ({ slotId, onPaymentComplete, onCancel }) => {
                 src={payment.qrCodeUrl} 
                 alt="UPI QR Code" 
                 className="upi-qr-code"
+                style={{ maxWidth: '100%', height: 'auto', maxHeight: '300px', objectFit: 'contain' }}
               />
             </div>
             <p className="upi-id">UPI ID: <strong>{payment.upiId}</strong></p>
