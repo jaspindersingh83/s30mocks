@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 import api from "../../utils/api";
+import PreBookingPayment from "../payments/PreBookingPayment";
 import "./Slots.css";
 
 const AvailableSlots = () => {
   const { user, isCandidate } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [interviewers, setInterviewers] = useState([]);
@@ -14,6 +17,8 @@ const AvailableSlots = () => {
   const [selectedType, setSelectedType] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [interviewerRatings, setInterviewerRatings] = useState({});
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [showPayment, setShowPayment] = useState(false);
 
   // Format date for display - Converts from UTC to local timezone with clear timezone indicator
   const formatDate = (dateString, timezone) => {
@@ -118,45 +123,36 @@ const AvailableSlots = () => {
     loadSlots();
   }, [dateFilter, selectedInterviewer, selectedType]);
 
-  // Handle slot booking
-  const handleBookSlot = async (slotId) => {
-    if (!window.confirm("Are you sure you want to book this slot?")) {
+  // Handle initiating the booking process
+  const handleInitiateBooking = (slot) => {
+    if (!window.confirm("You'll need to complete payment before this slot is booked. Proceed?")) {
       return;
     }
 
-    try {
-      await api.post(`/api/slots/book/${slotId}`);
-      toast.success(
-        "Slot booked successfully! Check your interviews page for details."
-      );
+    // Set the selected slot and show payment component
+    setSelectedSlot(slot);
+    setShowPayment(true);
+  };
 
-      // Update local state
-      setSlots(slots.filter((slot) => slot._id !== slotId));
-    } catch (err) {
-      if (
-        err.response?.status === 400 &&
-        err.response?.data?.pendingInterviews
-      ) {
-        // Handle case where candidate has pending payments
-        const pendingInterviews = err.response.data.pendingInterviews;
-
-        toast.error(
-          <div>
-            <p>{err.response.data.message}</p>
-            <p>
-              Please complete payment for your scheduled interview before
-              booking a new one.
-            </p>
-            <a href="/interviews" className="toast-link">
-              Go to Interviews
-            </a>
-          </div>,
-          { autoClose: 10000 }
-        );
-      } else {
-        toast.error(err.response?.data?.message || "Failed to book slot");
-      }
+  // Handle payment completion
+  const handlePaymentComplete = () => {
+    toast.success("Payment submitted and slot booked successfully! Check your interviews page for details.");
+    
+    // Update local state to remove the booked slot
+    if (selectedSlot) {
+      setSlots(slots.filter((slot) => slot._id !== selectedSlot._id));
     }
+    
+    // Reset state and navigate to interviews page
+    setSelectedSlot(null);
+    setShowPayment(false);
+    navigate('/interviews');
+  };
+
+  // Handle payment cancellation
+  const handlePaymentCancel = () => {
+    setSelectedSlot(null);
+    setShowPayment(false);
   };
 
   // Render star rating
@@ -242,6 +238,20 @@ const AvailableSlots = () => {
 
     return grouped;
   };
+
+  // If showing payment component, render it instead of the slots list
+  if (showPayment && selectedSlot) {
+    return (
+      <div className="slots-container">
+        <h2>Complete Payment to Book Slot</h2>
+        <PreBookingPayment 
+          slotId={selectedSlot._id} 
+          onPaymentComplete={handlePaymentComplete}
+          onCancel={handlePaymentCancel}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="slots-container">
@@ -380,9 +390,9 @@ const AvailableSlots = () => {
                     {isCandidate && (
                       <button
                         className="btn-primary"
-                        onClick={() => handleBookSlot(slot._id)}
+                        onClick={() => handleInitiateBooking(slot)}
                       >
-                        Book Slot
+                        Book & Pay
                       </button>
                     )}
                   </div>

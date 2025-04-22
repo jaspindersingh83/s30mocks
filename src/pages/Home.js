@@ -49,10 +49,9 @@ const Home = () => {
             </p>
           </div>
           <div className="feature-card">
-            <h3>Simple UPI Payments</h3>
+            <h3>Secure Pre-Payment</h3>
             <p>
-              Pay directly to interviewers using UPI for a seamless booking
-              experience.
+              Simple and secure UPI payments before booking ensure a smooth interview experience.
             </p>
           </div>
         </div>
@@ -68,25 +67,23 @@ const Home = () => {
           </div>
           <div className="step">
             <div className="step-number">2</div>
-            <h3>Book an Interview</h3>
+            <h3>Pay & Book</h3>
             <p>
-              Browse interviewers and schedule a mock interview at your
-              convenience.
+              Complete payment via UPI and book your preferred interview slot.
             </p>
           </div>
           <div className="step">
             <div className="step-number">3</div>
-            <h3>Attend & Improve</h3>
+            <h3>Prepare</h3>
             <p>
-              Participate in the mock interview and receive valuable feedback.
+              Receive confirmation and prepare for your upcoming mock interview.
             </p>
           </div>
           <div className="step">
             <div className="step-number">4</div>
-            <h3>Make Payment</h3>
+            <h3>Attend & Improve</h3>
             <p>
-              Pay directly to the interviewer using UPI by scanning their QR
-              code.
+              Participate in the mock interview and receive valuable feedback to enhance your skills.
             </p>
           </div>
         </div>
