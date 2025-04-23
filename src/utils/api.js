@@ -1,35 +1,26 @@
 import axios from 'axios';
 
-// Detect Safari browser
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
 // Create an axios instance with base URL from environment variables
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000',
-  withCredentials: true, // Important for cookies
+  withCredentials: false, // No cookies needed for JWT-only auth
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   }
 });
 
 // Add a request interceptor to include the token in every request
 api.interceptors.request.use(
   config => {
-    // Get token from localStorage
-    const token = localStorage.getItem('token');
+  
     
+    // Get token from localStorage
+    const token = localStorage.getItem('token');  
     // If token exists, add it to the headers
     if (token) {
-      // Add token to both header formats for maximum compatibility
-      config.headers['x-auth-token'] = token;
+      // Use Authorization header with Bearer scheme as the standard approach
       config.headers['Authorization'] = `Bearer ${token}`;
-      
-      // For Safari, ensure cookies are properly handled
-      if (isSafari) {
-        config.withCredentials = true;
-      }
     }
-    
     return config;
   },
   error => {
@@ -39,17 +30,25 @@ api.interceptors.request.use(
 
 // Add a response interceptor to handle common errors
 api.interceptors.response.use(
-  response => response,
+  response => {
+    // If the response includes a token in the header, update localStorage
+    const authHeader = response.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      localStorage.setItem('token', token);
+    }
+    
+    return response;
+  },
   error => {
     // Handle 401 errors globally
     if (error.response && error.response.status === 401) {
       // Clear localStorage and redirect to login if unauthorized
-      console.error('Authentication error. Please log in again.');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       
-      // Only redirect if we're in a browser environment
-      if (typeof window !== 'undefined') {
+      // Only redirect if we're in a browser environment and not in an API call from a popup window
+      if (typeof window !== 'undefined' && !window.opener) {
         window.location.href = '/login';
       }
     }

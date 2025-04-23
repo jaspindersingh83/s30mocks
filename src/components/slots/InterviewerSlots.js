@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
+import api from "../../utils/api";
 import { DateTime } from "luxon";
 import AuthContext from "../../context/AuthContext";
 import "./Slots.css";
@@ -75,7 +75,7 @@ const InterviewerSlots = () => {
         url += `?${params.join("&")}`;
       }
 
-      const res = await axios.get(url);
+      const res = await api.get(url);
       setSlots(res.data);
     } catch (err) {
       console.error("Error loading slots:", err);
@@ -96,7 +96,7 @@ const InterviewerSlots = () => {
   // Load user profile to get default meeting link
   const loadUserProfile = async () => {
     try {
-      const res = await axios.get("/api/users/me");
+      const res = await api.get("/api/users/me");
       if (res.data.defaultMeetingLink) {
         setDefaultMeetingLink(res.data.defaultMeetingLink);
       }
@@ -125,7 +125,7 @@ const InterviewerSlots = () => {
     }
 
     try {
-      const res = await axios.put("/api/users/profile", { defaultMeetingLink });
+      await api.put("/api/users/profile", { defaultMeetingLink });
       toast.success("Default meeting link updated successfully");
       setShowMeetingLinkForm(false);
     } catch (err) {
@@ -201,7 +201,7 @@ const InterviewerSlots = () => {
         }
 
         // Create multiple slots
-        const response = await axios.post("/api/slots/batch", {
+        const response = await api.post("/api/slots/batch", {
           interviewType,
           slots,
         });
@@ -255,7 +255,7 @@ const InterviewerSlots = () => {
         interviewType,
       };
 
-      const res = await axios.post("/api/slots/interviewer", payload);
+      const res = await api.post("/api/slots", payload);
 
       toast.success("Slot created successfully");
       setSlots([...slots, res.data.slot]);
@@ -282,7 +282,7 @@ const InterviewerSlots = () => {
     }
 
     try {
-      await axios.delete(`/api/slots/interviewer/${slotId}`);
+      await api.delete(`/api/slots/interviewer/${slotId}`);
       toast.success("Slot deleted successfully");
 
       // Update local state
