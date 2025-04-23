@@ -103,7 +103,7 @@ const RatingManagement = () => {
       <div className="search-filters">
         <input
           type="text"
-          placeholder="Search by name or feedback..."
+          placeholder="Search by Interviewer or Candidate..."
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
