@@ -11,7 +11,7 @@ const InterviewerSlots = () => {
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState("");
   const [startHour, setStartHour] = useState("");
-  const [isRecurring, setIsRecurring] = useState(true);
+  const [isRecurring, setIsRecurring] = useState(true); // Always true now as we're using the same logic
   const [dayOfWeek, setDayOfWeek] = useState("");
   const [recurringWeeks, setRecurringWeeks] = useState(4); // Default to 4 weeks
   const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
@@ -215,58 +215,77 @@ const InterviewerSlots = () => {
         return;
       }
 
-      // For single slot
+      // For single slot - treat it as a recurring slot with just one week
       const hour = parseInt(startHour);
       if (isNaN(hour) || hour < 0 || hour > 23) {
         toast.error("Please select a valid hour");
         return;
       }
 
-      // Properly convert local time to UTC using our convertToUTC function
-      const startTimeUTC = convertToUTC(startDate, `${hour}:00`);
-      const start = new Date(startTimeUTC);
-
-      // Create end date as a new instance
-      const end = new Date(start.getTime());
-
-      // Validate the date
-      if (isNaN(start.getTime())) {
-        toast.error("Invalid date or time");
-        return;
-      }
-
-      // Ensure start time is in the future
-      const now = new Date();
-      if (start <= now) {
-        toast.error("Start time must be in the future");
-        return;
-      }
-
-      // Calculate end time based on interview type
-      if (interviewType === "DSA") {
-        end.setMinutes(start.getMinutes() + 40);
+      // Get the date from startDate if provided, otherwise use dayOfWeek logic
+      let slotDate;
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const now = DateTime.now().setZone(timezone);
+      
+      if (startDate) {
+        // If a specific date was selected, use that date with the selected hour
+        const localDate = new Date(startDate);
+        localDate.setHours(hour, 0, 0, 0);
+        
+        // Convert to Luxon DateTime
+        slotDate = DateTime.fromJSDate(localDate).setZone(timezone);
+        
+        // Ensure it's in the future
+        if (slotDate <= now) {
+          toast.error("Start time must be in the future");
+          return;
+        }
+      } else if (dayOfWeek) {
+        // Use the day of week logic which works well with timezones
+        const dayOfWeekInt = parseInt(dayOfWeek);
+        const luxonDayOfWeek = dayOfWeekInt === 0 ? 7 : dayOfWeekInt;
+        
+        // Calculate days until next occurrence of selected day
+        let daysUntil = (luxonDayOfWeek - now.weekday + 7) % 7;
+        if (daysUntil === 0 && now.hour >= hour) {
+          daysUntil = 7; // If today is the day but hour has passed, go to next week
+        }
+        
+        // Create the date for the slot
+        slotDate = now.plus({ days: daysUntil }).set({ 
+          hour: hour, 
+          minute: 0, 
+          second: 0, 
+          millisecond: 0 
+        });
       } else {
-        end.setMinutes(start.getMinutes() + 50);
+        toast.error("Please select either a specific date or day of week");
+        return;
       }
-
-      const payload = {
-        startTime: start.toISOString(),
-        endTime: end.toISOString(),
+      
+      // Calculate end time based on interview type
+      const duration = interviewType === "DSA" ? 40 : 50;
+      const endTime = slotDate.plus({ minutes: duration });
+      
+      // Create a single slot using the batch endpoint
+      const slots = [{
+        start: slotDate.toUTC().toISO(),
+        end: endTime.toUTC().toISO(),
+        timeZone: timezone
+      }];
+      
+      const response = await api.post("/api/slots/batch", {
         interviewType,
-      };
-
-      const res = await api.post("/api/slots/interviewer", payload);
+        slots,
+      });
 
       toast.success("Slot created successfully");
-      setSlots([...slots, res.data.slot]);
-
+      
       // Reset form
       setStartDate("");
       setStartHour("");
-      setIsRecurring(false);
       setDayOfWeek("");
-      setRecurringWeeks(4);
-
+      
       // Reload slots to ensure we have the latest data
       loadSlots();
     } catch (err) {
@@ -391,27 +410,35 @@ const InterviewerSlots = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="recurring">Slot Type</label>
+              <label htmlFor="slotType">Slot Type</label>
               <select
-                id="recurring"
-                value={isRecurring ? "recurring" : "single"}
-                onChange={(e) => setIsRecurring(e.target.value === "recurring")}
+                id="slotType"
+                value={startDate ? "specific" : "weekly"}
+                onChange={(e) => {
+                  if (e.target.value === "specific") {
+                    setDayOfWeek(""); // Clear day of week when using specific date
+                    setStartDate(currentDate); // Set to current date
+                  } else {
+                    setStartDate(""); // Clear specific date when using day of week
+                    setDayOfWeek("1"); // Default to Monday
+                  }
+                }}
               >
-                <option value="single">Single Slot</option>
-                <option value="recurring">Recurring Weekly</option>
+                <option value="specific">Specific Date</option>
+                <option value="weekly">Day of Week</option>
               </select>
             </div>
           </div>
 
           <div className="form-row">
-            {isRecurring ? (
+            {!startDate ? (
               <div className="form-group">
                 <label htmlFor="dayOfWeek">Day of Week</label>
                 <select
                   id="dayOfWeek"
                   value={dayOfWeek}
                   onChange={(e) => setDayOfWeek(e.target.value)}
-                  required={isRecurring}
+                  required={!startDate}
                 >
                   <option value="">Select day</option>
                   <option value="0">Sunday</option>
@@ -432,8 +459,7 @@ const InterviewerSlots = () => {
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   min={currentDate}
-                  required={!isRecurring}
-                  disabled={isRecurring}
+                  required={!!startDate}
                 />
               </div>
             )}
@@ -460,14 +486,14 @@ const InterviewerSlots = () => {
               </select>
             </div>
 
-            {isRecurring && (
+            {!startDate && (
               <div className="form-group">
                 <label htmlFor="recurringWeeks">Number of Weeks</label>
                 <select
                   id="recurringWeeks"
                   value={recurringWeeks}
                   onChange={(e) => setRecurringWeeks(parseInt(e.target.value))}
-                  required={isRecurring}
+                  required={!startDate}
                 >
                   {[1, 2, 3, 4, 8, 12].map((weeks) => (
                     <option key={weeks} value={weeks}>
