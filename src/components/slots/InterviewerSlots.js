@@ -424,8 +424,8 @@ const InterviewerSlots = () => {
                   }
                 }}
               >
-                <option value="specific">Specific Date</option>
-                <option value="weekly">Day of Week</option>
+                <option value="specific">Single Slot</option>
+                <option value="weekly">Recurring</option>
               </select>
             </div>
           </div>
