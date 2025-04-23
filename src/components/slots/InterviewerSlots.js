@@ -255,7 +255,7 @@ const InterviewerSlots = () => {
         interviewType,
       };
 
-      const res = await api.post("/api/slots", payload);
+      const res = await api.post("/api/slots/interviewer", payload);
 
       toast.success("Slot created successfully");
       setSlots([...slots, res.data.slot]);
