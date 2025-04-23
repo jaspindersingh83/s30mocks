@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import './UpiQrCodeUpload.css'; // Reusing the same CSS
 
 const UpiSetupDisplay = () => {
@@ -13,7 +13,7 @@ const UpiSetupDisplay = () => {
       try {
         setLoading(true);
         // Fetch the UPI setup from the admin user
-        const response = await axios.get('/api/payments/upi-setup');
+        const response = await api.get('/api/payments/upi-setup');
         console.log('UPI setup response:', response.data);
         
         if (response.data && response.data.upiId) {

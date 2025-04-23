@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import AuthContext from '../../context/AuthContext';
 import './UpiQrCodeUpload.css';
 
@@ -16,7 +16,7 @@ const UpiQrCodeUpload = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const res = await axios.get('/api/users/me');
+        const res = await api.get('/api/users/me');
         console.log('User profile data:', res.data);
         if (res.data.upiId) {
           setUpiId(res.data.upiId);
@@ -94,7 +94,7 @@ const UpiQrCodeUpload = () => {
         formData.append('qrCode', qrCode);
       }
       
-      const res = await axios.post('/api/payments/upload-qr-code', formData, {
+      const res = await api.post('/api/payments/upload-qr-code', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
