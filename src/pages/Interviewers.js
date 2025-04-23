@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { toast } from 'react-toastify';
 import './Interviewers.css';
 
@@ -15,7 +15,7 @@ const Interviewers = () => {
   const fetchInterviewers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/users/interviewers');
+      const response = await api.get('/api/users/interviewers');
       setInterviewers(response.data);
       setLoading(false);
     } catch (error) {

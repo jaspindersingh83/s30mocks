@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { toast } from 'react-toastify';
 import { Link, useLocation } from 'react-router-dom';
 import { DateTime } from 'luxon';
@@ -43,7 +43,7 @@ const Interviews = () => {
         url += `?status=${statusFilter}`;
       }
       
-      const response = await axios.get(url);
+      const response = await api.get(url);
 
       
       // Filter out cancelled interviews if they're somehow included
@@ -63,7 +63,7 @@ const Interviews = () => {
     for (const interview of interviews) {
       try {
 
-        const response = await axios.get(`/api/payments/interview/${interview._id}`);
+        const response = await api.get(`/api/payments/interview/${interview._id}`);
         
         // The server now returns an object with status even if no payment exists
         statusMap[interview._id] = response.data.status || 'pending';
@@ -112,7 +112,7 @@ const Interviews = () => {
     
     try {
       setCancelling(true);
-      await axios.put(`/api/interviews/${interviewId}/cancel`);
+      await api.put(`/api/interviews/${interviewId}/cancel`);
       toast.success('Interview cancelled successfully');
       
       // Update the interviews list
@@ -133,7 +133,7 @@ const Interviews = () => {
       // Check if meeting details already exist
       if (interview.meetingLink) {
         // If meeting details exist, update interview status to 'in-progress'
-        await axios.put(`/api/interviews/${interview._id}/status`, { status: 'in-progress' });
+        await api.put(`/api/interviews/${interview._id}/status`, { status: 'in-progress' });
         
         // Open meeting link in a new tab
         window.open(interview.meetingLink, '_blank');
@@ -175,7 +175,7 @@ const Interviews = () => {
   
   const handleViewFeedback = (interviewId) => {
     // Always fetch the latest feedback
-    axios.get(`/api/feedback/interview/${interviewId}`)
+    api.get(`/api/feedback/interview/${interviewId}`)
       .then(res => {
         // Store the feedback details for future reference
         const updatedDetails = { ...feedbackDetails };
@@ -197,7 +197,7 @@ const Interviews = () => {
   
   const handleEditFeedback = (interview) => {
     // Fetch the existing feedback for this interview
-    axios.get(`/api/feedback/interview/${interview._id}`)
+    api.get(`/api/feedback/interview/${interview._id}`)
       .then(res => {
         if (res.data) {
           setEditingFeedback({
@@ -232,7 +232,7 @@ const Interviews = () => {
   const handleUpdateMeeting = async (interviewId) => {
     try {
       setUpdatingMeeting(true);
-      await axios.put(`/api/interviews/${interviewId}/meeting`, {
+      await api.put(`/api/interviews/${interviewId}/meeting`, {
         meetingLink
       });
       toast.success('Meeting link updated successfully');

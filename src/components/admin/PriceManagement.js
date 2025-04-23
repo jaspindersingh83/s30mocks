@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import ResponsiveTable from '../common/ResponsiveTable';
 import { toast } from 'react-toastify';
 // Using global admin styles from styles/admin.css
@@ -20,7 +20,7 @@ const PriceManagement = () => {
   const fetchPrices = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('/api/prices');
+      const res = await api.get('/api/prices');
       setPrices(res.data);
       setLoading(false);
     } catch (err) {
@@ -47,7 +47,7 @@ const PriceManagement = () => {
         return toast.error('Price must be a positive number');
       }
       
-      const res = await axios.put('/api/prices', {
+      const res = await api.put('/api/prices', {
         interviewType: formData.interviewType,
         price,
         currency: formData.currency

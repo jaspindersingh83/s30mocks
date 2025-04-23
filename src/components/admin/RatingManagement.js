@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../utils/api";
 import "./Admin.css";
 import "./RatingManagement.css";
 
@@ -19,7 +19,7 @@ const RatingManagement = () => {
   const fetchRatings = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("/api/ratings/all");
+      const res = await api.get("/api/ratings/all");
       setRatings(res.data);
       setTotalPages(Math.ceil(res.data.length / ratingsPerPage));
       setLoading(false);

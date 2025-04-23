@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { toast } from 'react-toastify';
 import './InterviewFeedback.css';
 
@@ -55,13 +55,13 @@ const InterviewFeedback = ({
     try {
       if (isEditing) {
         // Update existing feedback
-        await axios.put(`/api/feedback/${existingFeedback._id}`, {
+        await api.put(`/api/feedback/${existingFeedback._id}`, {
           ...feedbackForm
         });
         toast.success('Feedback updated successfully');
       } else {
         // Create new feedback
-        await axios.post('/api/feedback', {
+        await api.post('/api/feedback', {
           interviewId: interview._id,
           ...feedbackForm
         });

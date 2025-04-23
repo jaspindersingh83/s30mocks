@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../utils/api";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -20,7 +20,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("/api/admin/users", {
+      const res = await api.get("/api/admin/users", {
         params: {
           page: currentPage,
           limit: usersPerPage,
@@ -49,7 +49,7 @@ const UserManagement = () => {
     try {
       const newRole = actionType === "promote" ? "interviewer" : "candidate";
 
-      await axios.put(`/api/admin/users/${selectedUser._id}/role`, {
+      await api.put(`/api/admin/users/${selectedUser._id}/role`, {
         role: newRole,
       });
 

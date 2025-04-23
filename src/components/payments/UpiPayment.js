@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { useParams } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import UpiSetupDisplay from './UpiSetupDisplay';
@@ -25,7 +25,7 @@ const UpiPayment = ({ onPaymentComplete }) => {
         
         // First check if payment already exists
         try {
-          const existingPayment = await axios.get(`/api/payments/interview/${interviewId}`);
+          const existingPayment = await api.get(`/api/payments/interview/${interviewId}`);
           
           if (existingPayment.data && existingPayment.data.exists !== false) {
             console.log('Existing payment found:', existingPayment.data);
@@ -42,7 +42,7 @@ const UpiPayment = ({ onPaymentComplete }) => {
             console.log('No existing payment found, creating new payment request');
             // Create a new payment request
             try {
-              const res = await axios.post('/api/payments/create-payment-request', { interviewId });
+              const res = await api.post('/api/payments/create-payment-request', { interviewId });
               console.log('New payment created:', res.data);
               // Ensure all required fields are present in the payment object
               setPayment({
@@ -65,7 +65,7 @@ const UpiPayment = ({ onPaymentComplete }) => {
           if (err.response?.status === 404) {
             try {
               console.log('Creating new payment request after 404');
-              const res = await axios.post('/api/payments/create-payment-request', { interviewId });
+              const res = await api.post('/api/payments/create-payment-request', { interviewId });
               console.log('New payment created after 404:', res.data);
               // Ensure all required fields are present in the payment object
               setPayment({
@@ -138,7 +138,7 @@ const UpiPayment = ({ onPaymentComplete }) => {
         hasScreenshot: !!screenshot
       });
       
-      await axios.post('/api/payments/submit-payment-proof', formData, {
+      await api.post('/api/payments/submit-payment-proof', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -150,7 +150,7 @@ const UpiPayment = ({ onPaymentComplete }) => {
       });
       
       // Refresh payment details
-      const updatedPayment = await axios.get(`/api/payments/interview/${interviewId}`);
+      const updatedPayment = await api.get(`/api/payments/interview/${interviewId}`);
       setPayment(updatedPayment.data);
       
     } catch (err) {

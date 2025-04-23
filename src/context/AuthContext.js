@@ -76,9 +76,12 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const res = await api.post('/api/auth/login', { email, password });
       
-      // Store token in localStorage
+      // Store token in localStorage - this is critical for authentication
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
+        console.log('Token stored in localStorage:', res.data.token.substring(0, 20) + '...');
+      } else {
+        console.error('No token received in login response');
       }
       
       // Ensure consistent data structure for user state and localStorage
@@ -92,9 +95,6 @@ export const AuthProvider = ({ children }) => {
         if (res.data) {
           localStorage.setItem('user', JSON.stringify(res.data));
         }
-      }
-      if (res.data.token) {
-        localStorage.setItem('token', res.data.token);
       }
       return true;
     } catch (err) {
@@ -157,6 +157,14 @@ export const AuthProvider = ({ children }) => {
         picture: decodedToken.picture
       });
       
+      // Store token in localStorage - this is critical for authentication
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+        console.log('Google login: Token stored in localStorage:', res.data.token.substring(0, 20) + '...');
+      } else {
+        console.error('No token received in Google login response');
+      }
+      
       // Ensure consistent data structure for user state and localStorage
       if (res.data && res.data.user) {
         setUser(res.data);
@@ -169,10 +177,6 @@ export const AuthProvider = ({ children }) => {
         if (res.data) {
           localStorage.setItem('user', JSON.stringify(res.data));
         }
-      }
-      
-      if (res.data.token) {
-        localStorage.setItem('token', res.data.token);
       }
       return true;
     } catch (err) {

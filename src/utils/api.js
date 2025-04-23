@@ -3,7 +3,7 @@ import axios from 'axios';
 // Create an axios instance with base URL from environment variables
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000',
-  withCredentials: false, // No cookies needed for JWT-only auth
+  withCredentials: true, // Required for cross-domain authenticated requests
   headers: {
     'Content-Type': 'application/json',
   }

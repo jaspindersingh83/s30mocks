@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../utils/api";
 import { toast } from "react-toastify";
 import "./InterviewManagement.css";
 
@@ -37,7 +37,7 @@ const InterviewManagement = () => {
         queryParams += `&search=${encodeURIComponent(searchTerm.trim())}`;
       }
 
-      const res = await axios.get(`/api/admin/interviews?${queryParams}`);
+      const res = await api.get(`/api/admin/interviews?${queryParams}`);
 
       setInterviews(res.data.interviews);
       setTotalPages(res.data.totalPages);

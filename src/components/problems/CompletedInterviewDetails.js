@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { useParams } from 'react-router-dom';
 
 const CompletedInterviewDetails = () => {
@@ -15,11 +15,11 @@ const CompletedInterviewDetails = () => {
         setLoading(true);
         
         // Fetch problem and solution
-        const problemRes = await axios.get(`/api/problems/interview/${interviewId}`);
+        const problemRes = await api.get(`/api/problems/interview/${interviewId}`);
         
         // Fetch feedback if available
         try {
-          const feedbackRes = await axios.get(`/api/feedback/interview/${interviewId}`);
+          const feedbackRes = await api.get(`/api/feedback/interview/${interviewId}`);
           setFeedback(feedbackRes.data);
         } catch (feedbackErr) {
           console.log('No feedback available yet');

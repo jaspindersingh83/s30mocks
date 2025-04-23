@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { toast } from 'react-toastify';
 import './InterviewFeedback.css';
 
@@ -17,7 +17,7 @@ const InterviewRating = ({ interview, onClose, onSubmitSuccess }) => {
     setSubmitting(true);
     
     try {
-      await axios.post('/api/ratings', {
+      await api.post('/api/ratings', {
         interviewId: interview._id,
         rating,
         feedback

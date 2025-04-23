@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { toast } from 'react-toastify';
 import './ProblemManagement.css';
 
@@ -37,7 +37,7 @@ const ProblemManagement = () => {
       setLoading(true);
       setError('');
       
-      const res = await axios.get('/api/problems');
+      const res = await api.get('/api/problems');
       setProblems(res.data);
       
     } catch (err) {
@@ -144,10 +144,10 @@ const ProblemManagement = () => {
       };
       
       if (editingProblem) {
-        await axios.put(`/api/problems/${editingProblem._id}`, submitData);
+        await api.put(`/api/problems/${editingProblem._id}`, submitData);
         toast.success('Problem updated successfully');
       } else {
-        await axios.post('/api/problems', submitData);
+        await api.post('/api/problems', submitData);
         toast.success('Problem added successfully');
       }
       
@@ -198,7 +198,7 @@ const ProblemManagement = () => {
     }
     
     try {
-      await axios.delete(`/api/problems/${problemId}`);
+      await api.delete(`/api/problems/${problemId}`);
       toast.success('Problem deleted successfully');
       fetchProblems();
     } catch (err) {
