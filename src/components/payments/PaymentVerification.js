@@ -144,13 +144,13 @@ const PaymentVerification = () => {
               
               <div className="payment-proof">
                 <h4>Payment Proof</h4>
-                {payment.transactionScreenshot ? (
+                {payment.transactionScreenshotUrl ? (
                   <div 
                     className="proof-image-container"
-                    onClick={() => window.open(payment.transactionScreenshot, '_blank')}
+                    onClick={() => window.open(payment.transactionScreenshotUrl, '_blank')}
                   >
                     <img 
-                      src={payment.transactionScreenshot} 
+                      src={payment.transactionScreenshotUrl} 
                       alt="Payment Screenshot" 
                       className="proof-image"
                     />

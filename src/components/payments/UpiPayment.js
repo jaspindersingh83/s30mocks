@@ -130,6 +130,7 @@ const UpiPayment = ({ onPaymentComplete }) => {
       const formData = new FormData();
       formData.append('paymentId', payment._id); // Use _id instead of paymentId
       formData.append('transactionId', transactionId);
+      // Use the same field name as expected by multer on the server
       formData.append('transactionScreenshot', screenshot);
       
       console.log('Submitting payment proof:', {
