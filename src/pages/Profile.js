@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import api from "../api";
 import { toast } from "react-toastify";
 import AuthContext from "../context/AuthContext";
 import "./Profile.css";
@@ -93,7 +93,7 @@ const Profile = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      const response = await axios.put("/api/users/profile", updateData);
+      const response = await api.put("/api/users/profile", updateData);
 
       // Update user in context
       updateProfile(response.data);
