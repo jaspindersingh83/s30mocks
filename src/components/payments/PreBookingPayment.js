@@ -82,23 +82,39 @@ const PreBookingPayment = ({ slotId, onPaymentComplete, onCancel }) => {
     }
     
     setSubmitting(true);
+    setMessage({ text: 'Uploading payment details... Please wait.', type: 'info' });
     
     try {
+      // Create a new FormData instance
       const formData = new FormData();
       formData.append('paymentId', payment._id);
       formData.append('transactionId', transactionId);
+      // Make sure the field name matches what the server expects
       formData.append('transactionScreenshot', screenshot);
       formData.append('slotId', slotId);
       
-      // Submit payment proof
-      await api.post('/api/payments/submit-prebooking-payment', formData, {
+      // Log the form data for debugging (will be removed in production)
+      console.log('Payment data being submitted:', {
+        paymentId: payment._id,
+        transactionId,
+        slotId,
+        screenshotName: screenshot.name,
+        screenshotType: screenshot.type,
+        screenshotSize: screenshot.size
+      });
+      
+      // Submit payment proof with proper headers
+      const paymentResponse = await api.post('/api/payments/submit-prebooking-payment', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
       
+      console.log('Payment submission successful:', paymentResponse.data);
+      
       // Book the slot now that payment is submitted
-      await api.post(`/api/slots/book/${slotId}?paymentSubmitted=true`);
+      const bookingResponse = await api.post(`/api/slots/book/${slotId}?paymentSubmitted=true`);
+      console.log('Slot booking successful:', bookingResponse.data);
       
       toast.success('Payment submitted and slot booked successfully! The interviewer will verify your payment.');
       
@@ -112,10 +128,17 @@ const PreBookingPayment = ({ slotId, onPaymentComplete, onCancel }) => {
       
     } catch (err) {
       console.error('Error submitting payment proof:', err);
+      // More detailed error message
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          err.message || 
+                          'Error submitting payment proof';
+      
       setMessage({ 
-        text: err.response?.data?.message || 'Error submitting payment proof', 
+        text: `Payment submission failed: ${errorMessage}`, 
         type: 'error' 
       });
+      toast.error(`Payment submission failed: ${errorMessage}`);
     } finally {
       setSubmitting(false);
     }
