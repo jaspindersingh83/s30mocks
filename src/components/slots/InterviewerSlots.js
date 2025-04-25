@@ -13,7 +13,7 @@ const InterviewerSlots = () => {
   const [startHour, setStartHour] = useState("");
   const [isRecurring, setIsRecurring] = useState(true); // Always true now as we're using the same logic
   const [dayOfWeek, setDayOfWeek] = useState("");
-  const [recurringWeeks, setRecurringWeeks] = useState(4); // Default to 4 weeks
+  const [recurringWeeks, setRecurringWeeks] = useState(2); // Default to 2 weeks
   const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
   const [showMeetingLinkForm, setShowMeetingLinkForm] = useState(false);
 
@@ -140,30 +140,35 @@ const InterviewerSlots = () => {
   const handleCreateSlot = async (e) => {
     e.preventDefault();
 
+    // Validate form fields based on slot type
     if (isRecurring) {
       if (!dayOfWeek || !startHour || !interviewType || !recurringWeeks) {
-        toast.error("Please fill in all required fields");
+        toast.error("Please fill in all required fields for recurring slot");
         return;
       }
     } else {
+      // Single slot validation
       if (!startDate || !startHour || !interviewType) {
-        toast.error("Please fill in all required fields");
+        toast.error("Please fill in all required fields for single slot");
         return;
       }
     }
 
     try {
+      // Get interviewer's timezone
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const now = DateTime.now().setZone(timezone);
+      const hourInt = parseInt(startHour);
+
+      if (isNaN(hourInt) || hourInt < 0 || hourInt > 23) {
+        toast.error("Please select a valid hour");
+        return;
+      }
+      
       if (isRecurring) {
-        // Create recurring slots using Luxon for proper timezone handling
+        // RECURRING SLOTS LOGIC
         const slots = [];
         const dayOfWeekInt = parseInt(dayOfWeek);
-        const hourInt = parseInt(startHour);
-        
-        // Get interviewer's timezone
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        
-        // Start with current date/time in interviewer's timezone
-        let now = DateTime.now().setZone(timezone);
         
         // Find the next occurrence of the selected day
         // Luxon uses 1-7 for days (Monday-Sunday), but our UI uses 0-6 (Sunday-Saturday)
@@ -201,93 +206,58 @@ const InterviewerSlots = () => {
         }
 
         // Create multiple slots
-        const response = await api.post("/api/slots/batch", {
+        await api.post("/api/slots/batch", {
           interviewType,
           slots,
         });
 
         toast.success(`Created ${slots.length} recurring slots successfully`);
-        setIsRecurring(false);
         setDayOfWeek("");
-        setRecurringWeeks(4);
+        setRecurringWeeks(2);
         setStartHour("");
         loadSlots();
         return;
-      }
-
-      // For single slot - treat it as a recurring slot with just one week
-      const hour = parseInt(startHour);
-      if (isNaN(hour) || hour < 0 || hour > 23) {
-        toast.error("Please select a valid hour");
-        return;
-      }
-
-      // Get the date from startDate if provided, otherwise use dayOfWeek logic
-      let slotDate;
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const now = DateTime.now().setZone(timezone);
-      
-      if (startDate) {
+      } else {
+        // SINGLE SLOT LOGIC
         // If a specific date was selected, use that date with the selected hour
         const localDate = new Date(startDate);
-        localDate.setHours(hour, 0, 0, 0);
+        localDate.setHours(hourInt, 0, 0, 0);
         
         // Convert to Luxon DateTime
-        slotDate = DateTime.fromJSDate(localDate).setZone(timezone);
+        let slotDate = DateTime.fromJSDate(localDate).setZone(timezone);
         
         // Ensure it's in the future
         if (slotDate <= now) {
           toast.error("Start time must be in the future");
           return;
         }
-      } else if (dayOfWeek) {
-        // Use the day of week logic which works well with timezones
-        const dayOfWeekInt = parseInt(dayOfWeek);
-        const luxonDayOfWeek = dayOfWeekInt === 0 ? 7 : dayOfWeekInt;
         
-        // Calculate days until next occurrence of selected day
-        let daysUntil = (luxonDayOfWeek - now.weekday + 7) % 7;
-        if (daysUntil === 0 && now.hour >= hour) {
-          daysUntil = 7; // If today is the day but hour has passed, go to next week
-        }
+        // Calculate end time based on interview type
+        const duration = interviewType === "DSA" ? 40 : 50;
+        const endTime = slotDate.plus({ minutes: duration });
         
-        // Create the date for the slot
-        slotDate = now.plus({ days: daysUntil }).set({ 
-          hour: hour, 
-          minute: 0, 
-          second: 0, 
-          millisecond: 0 
+        // Create a single slot
+        const slot = {
+          start: slotDate.toUTC().toISO(),
+          end: endTime.toUTC().toISO(),
+          timeZone: timezone
+        };
+
+        // Use the same batch endpoint but with a single slot
+        await api.post("/api/slots/batch", {
+          interviewType,
+          slots: [slot],
         });
-      } else {
-        toast.error("Please select either a specific date or day of week");
+
+        toast.success("Single slot created successfully");
+        setStartDate(currentDate);
+        setStartHour("");
+        loadSlots();
         return;
       }
       
-      // Calculate end time based on interview type
-      const duration = interviewType === "DSA" ? 40 : 50;
-      const endTime = slotDate.plus({ minutes: duration });
-      
-      // Create a single slot using the batch endpoint
-      const slots = [{
-        start: slotDate.toUTC().toISO(),
-        end: endTime.toUTC().toISO(),
-        timeZone: timezone
-      }];
-      
-      const response = await api.post("/api/slots/batch", {
-        interviewType,
-        slots,
-      });
-
-      toast.success("Slot created successfully");
-      
-      // Reset form
-      setStartDate("");
-      setStartHour("");
-      setDayOfWeek("");
-      
-      // Reload slots to ensure we have the latest data
-      loadSlots();
+      // This code should never be reached due to the if/else structure above
+      // Both branches have return statements
     } catch (err) {
       console.error("Error creating slot:", err);
       toast.error(err.response?.data?.message || "Failed to create slot");
@@ -416,9 +386,11 @@ const InterviewerSlots = () => {
                 value={startDate ? "specific" : "weekly"}
                 onChange={(e) => {
                   if (e.target.value === "specific") {
+                    setIsRecurring(false); // Set to single slot mode
                     setDayOfWeek(""); // Clear day of week when using specific date
                     setStartDate(currentDate); // Set to current date
                   } else {
+                    setIsRecurring(true); // Set to recurring slot mode
                     setStartDate(""); // Clear specific date when using day of week
                     setDayOfWeek("1"); // Default to Monday
                   }
