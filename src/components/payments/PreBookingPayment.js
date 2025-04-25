@@ -201,15 +201,24 @@ const PreBookingPayment = ({ slotId, onPaymentComplete, onCancel }) => {
           
           <form onSubmit={handleSubmit} className="payment-proof-form">
             <div className="form-group">
-              <label htmlFor="transactionId">Transaction ID:</label>
+              <label htmlFor="transactionId">Transaction ID (Last 4 digits only):</label>
               <input
                 type="text"
                 id="transactionId"
                 value={transactionId}
-                onChange={(e) => setTransactionId(e.target.value)}
-                placeholder="Enter UPI transaction ID"
+                onChange={(e) => {
+                  // Only allow up to 4 digits
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  if (value.length <= 4) {
+                    setTransactionId(value);
+                  }
+                }}
+                placeholder="Enter last 4 digits only"
+                maxLength="4"
+                pattern="[0-9]{4}"
                 required
               />
+              <small className="form-text">For security reasons, please enter only the last 4 digits of your UPI transaction ID</small>
             </div>
             
             <div className="form-group">

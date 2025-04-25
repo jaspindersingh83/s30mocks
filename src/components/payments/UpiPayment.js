@@ -256,15 +256,24 @@ const UpiPayment = ({ onPaymentComplete }) => {
           <h3>Submit Payment Proof</h3>
           
           <div className="form-group">
-            <label htmlFor="transactionId">Transaction ID / UPI Reference Number</label>
+            <label htmlFor="transactionId">Transaction ID (Last 4 digits only)</label>
             <input
               type="text"
               id="transactionId"
               value={transactionId}
-              onChange={(e) => setTransactionId(e.target.value)}
-              placeholder="Enter the transaction ID from your UPI app"
+              onChange={(e) => {
+                // Only allow up to 4 digits
+                const value = e.target.value.replace(/[^0-9]/g, '');
+                if (value.length <= 4) {
+                  setTransactionId(value);
+                }
+              }}
+              placeholder="Enter last 4 digits only"
+              maxLength="4"
+              pattern="[0-9]{4}"
               required
             />
+            <p className="form-text">For security reasons, please enter only the last 4 digits of your UPI transaction ID</p>
           </div>
           
           <div className="form-group">
