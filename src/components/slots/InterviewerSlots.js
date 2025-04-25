@@ -17,7 +17,8 @@ const InterviewerSlots = () => {
   const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
   const [showMeetingLinkForm, setShowMeetingLinkForm] = useState(false);
 
-  const [interviewType, setInterviewType] = useState(""); // Empty string to show all types by default
+  const [interviewTypeFilter, setInterviewTypeFilter] = useState(""); // Empty string to show all types by default
+  const [interviewType, setInterviewType] = useState("DSA"); // Default to DSA for creating new slots
   const [dateFilter, setDateFilter] = useState("");
 
   // Format date for input fields
@@ -67,8 +68,8 @@ const InterviewerSlots = () => {
         params.push(`endDate=${nextDay.toISOString()}`);
       }
 
-      if (interviewType) {
-        params.push(`interviewType=${interviewType}`);
+      if (interviewTypeFilter) {
+        params.push(`interviewType=${interviewTypeFilter}`);
       }
 
       if (params.length > 0) {
@@ -91,7 +92,7 @@ const InterviewerSlots = () => {
       loadSlots();
       loadUserProfile();
     }
-  }, [isInterviewer, dateFilter, interviewType]);
+  }, [isInterviewer, dateFilter, interviewTypeFilter]);
 
   // Load user profile to get default meeting link
   const loadUserProfile = async () => {
@@ -505,8 +506,8 @@ const InterviewerSlots = () => {
             <label htmlFor="typeFilter">Filter by Type:</label>
             <select
               id="typeFilter"
-              value={interviewType}
-              onChange={(e) => setInterviewType(e.target.value)}
+              value={interviewTypeFilter}
+              onChange={(e) => setInterviewTypeFilter(e.target.value)}
             >
               <option value="">All Types</option>
               <option value="DSA">DSA</option>
@@ -514,10 +515,10 @@ const InterviewerSlots = () => {
             </select>
           </div>
           
-          {(dateFilter || interviewType) && (
+          {(dateFilter || interviewTypeFilter) && (
             <button className="btn-secondary" onClick={() => {
               setDateFilter("");
-              setInterviewType("");
+              setInterviewTypeFilter("");
             }}>
               Clear Filter
             </button>
