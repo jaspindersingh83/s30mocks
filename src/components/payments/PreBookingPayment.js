@@ -111,10 +111,7 @@ const PreBookingPayment = ({ slotId, onPaymentComplete, onCancel }) => {
       });
       
       console.log('Payment submission successful:', paymentResponse.data);
-      
-      // Book the slot now that payment is submitted
-      const bookingResponse = await api.post(`/api/slots/book/${slotId}?paymentSubmitted=true`);
-      console.log('Slot booking successful:', bookingResponse.data);
+      // No need to book the slot separately - the submitPreBookingPayment endpoint already handles this
       
       toast.success('Payment submitted and slot booked successfully! The interviewer will verify your payment.');
       

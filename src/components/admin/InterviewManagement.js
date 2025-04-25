@@ -30,6 +30,8 @@ const InterviewManagement = () => {
       }
 
       if (paymentFilter !== "all") {
+        // Still use the same query parameter name for backward compatibility
+        // The server will handle filtering differently now
         queryParams += `&paymentStatus=${paymentFilter}`;
       }
 
@@ -187,10 +189,10 @@ const InterviewManagement = () => {
                     <td>
                       <span
                         className={`status-badge ${getPaymentBadgeClass(
-                          interview.paymentStatus
+                          interview.paymentId ? interview.paymentId.status : 'pending'
                         )}`}
                       >
-                        {interview.paymentStatus}
+                        {interview.paymentId ? interview.paymentId.status : 'pending'}
                       </span>
                     </td>
                     <td>₹{interview.price ? interview.price : "N/A"}</td>

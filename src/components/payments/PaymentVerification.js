@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import './PaymentVerification.css';
@@ -22,7 +22,7 @@ const PaymentVerification = () => {
       setError('');
       setMessage({ text: '', type: '' });
       
-      const res = await axios.get('/api/payments/pending');
+      const res = await api.get('/api/payments/pending');
       setPendingPayments(res.data);
       
       if (res.data.length === 0) {
@@ -46,7 +46,7 @@ const PaymentVerification = () => {
       
       setProcessing(true);
       
-      await axios.post('/api/payments/verify', {
+      await api.post('/api/payments/verify', {
         paymentId,
         verified
       });

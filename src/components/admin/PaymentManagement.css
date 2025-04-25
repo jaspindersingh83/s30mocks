@@ -1,0 +1,143 @@
+.payment-management {
+  width: 100%;
+  padding: 20px;
+}
+
+.payment-management h2 {
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.refresh-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.refresh-button:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table th {
+  background-color: var(--secondary-bg);
+  font-weight: 600;
+}
+
+.admin-table tr:hover {
+  background-color: var(--hover-bg);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-badge.pending {
+  background-color: #f0ad4e;
+  color: #fff;
+}
+
+.status-badge.submitted {
+  background-color: #5bc0de;
+  color: #fff;
+}
+
+.status-badge.verified {
+  background-color: #5cb85c;
+  color: #fff;
+}
+
+.status-badge.rejected {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+.status-badge.refunded {
+  background-color: #777;
+  color: #fff;
+}
+
+.delete-button {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+  background-color: #c9302c;
+}
+
+.delete-button.confirm {
+  background-color: #c9302c;
+  font-weight: bold;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-color);
+  background-color: var(--card-bg);
+  border-radius: 4px;
+}
+
+.admin-loading,
+.admin-error {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-color);
+}
+
+.admin-error {
+  color: #d9534f;
+}
+
+@media (max-width: 768px) {
+  .admin-table th,
+  .admin-table td {
+    padding: 8px;
+    font-size: 13px;
+  }
+  
+  .delete-button {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
