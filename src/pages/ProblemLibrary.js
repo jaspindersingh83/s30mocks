@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import api   from '../api';
+import api from '../utils/api';
 import { toast } from 'react-toastify';
 import AuthContext from '../context/AuthContext';
 import ProblemDetails from '../components/problems/ProblemDetails';
@@ -59,7 +59,7 @@ const ProblemLibrary = () => {
       setLoadingProblem(true);
       setError('');
       
-      const res = await axios.get(`/api/problems/${problemId}`);
+      const res = await api.get(`/api/problems/${problemId}`);
       setSelectedProblem(res.data);
       
     } catch (err) {

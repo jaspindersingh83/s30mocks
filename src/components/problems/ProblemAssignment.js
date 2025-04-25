@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 
 const ProblemAssignment = ({ interviewId, onProblemAssigned }) => {
@@ -12,7 +12,7 @@ const ProblemAssignment = ({ interviewId, onProblemAssigned }) => {
       setLoading(true);
       setError('');
       
-      const res = await axios.post(`/api/problems/assign/${interviewId}`);
+      const res = await api.post(`/api/problems/assign/${interviewId}`);
       
       if (res.data) {
         if (onProblemAssigned) {

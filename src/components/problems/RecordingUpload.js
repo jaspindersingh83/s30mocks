@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../api';
+import api from '../../utils/api';
 
 const RecordingUpload = ({ interviewId, onRecordingUploaded }) => {
   const [recordingUrl, setRecordingUrl] = useState('');
@@ -20,7 +20,7 @@ const RecordingUpload = ({ interviewId, onRecordingUploaded }) => {
       setError('');
       setSuccess('');
       
-      const res = await axios.put(`/api/problems/recording/${interviewId}`, {
+      const res = await api.put(`/api/problems/recording/${interviewId}`, {
         recordingUrl
       });
       
