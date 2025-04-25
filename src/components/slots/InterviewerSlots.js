@@ -17,7 +17,7 @@ const InterviewerSlots = () => {
   const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
   const [showMeetingLinkForm, setShowMeetingLinkForm] = useState(false);
 
-  const [interviewType, setInterviewType] = useState("DSA");
+  const [interviewType, setInterviewType] = useState(""); // Empty string to show all types by default
   const [dateFilter, setDateFilter] = useState("");
 
   // Format date for input fields
@@ -491,15 +491,34 @@ const InterviewerSlots = () => {
         <h3>Your Slots</h3>
 
         <div className="filter-container">
-          <label htmlFor="dateFilter">Filter by Date:</label>
-          <input
-            type="date"
-            id="dateFilter"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-          />
-          {dateFilter && (
-            <button className="btn-secondary" onClick={() => setDateFilter("")}>
+          <div className="form-group">
+            <label htmlFor="dateFilter">Filter by Date:</label>
+            <input
+              type="date"
+              id="dateFilter"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="typeFilter">Filter by Type:</label>
+            <select
+              id="typeFilter"
+              value={interviewType}
+              onChange={(e) => setInterviewType(e.target.value)}
+            >
+              <option value="">All Types</option>
+              <option value="DSA">DSA</option>
+              <option value="System Design">System Design</option>
+            </select>
+          </div>
+          
+          {(dateFilter || interviewType) && (
+            <button className="btn-secondary" onClick={() => {
+              setDateFilter("");
+              setInterviewType("");
+            }}>
               Clear Filter
             </button>
           )}
