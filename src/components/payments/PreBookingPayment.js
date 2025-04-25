@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AuthContext from '../../context/AuthContext';
+import api from '../../utils/api';
 import './UpiPayment.css';
 
 const PreBookingPayment = ({ slotId, onPaymentComplete, onCancel }) => {
@@ -24,11 +24,11 @@ const PreBookingPayment = ({ slotId, onPaymentComplete, onCancel }) => {
         setLoading(true);
         
         // Fetch slot details
-        const slotResponse = await axios.get(`/api/slots/${slotId}`);
+        const slotResponse = await api.get(`/api/slots/${slotId}`);
         setSlot(slotResponse.data);
         
         // Create a pre-booking payment
-        const paymentResponse = await axios.post('/api/payments/create-prebooking-payment', { 
+        const paymentResponse = await api.post('/api/payments/create-prebooking-payment', { 
           slotId,
           interviewType: slotResponse.data.interviewType
         });
@@ -91,14 +91,14 @@ const PreBookingPayment = ({ slotId, onPaymentComplete, onCancel }) => {
       formData.append('slotId', slotId);
       
       // Submit payment proof
-      await axios.post('/api/payments/submit-prebooking-payment', formData, {
+      await api.post('/api/payments/submit-prebooking-payment', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
       
       // Book the slot now that payment is submitted
-      await axios.post(`/api/slots/book/${slotId}?paymentSubmitted=true`);
+      await api.post(`/api/slots/book/${slotId}?paymentSubmitted=true`);
       
       toast.success('Payment submitted and slot booked successfully! The interviewer will verify your payment.');
       
