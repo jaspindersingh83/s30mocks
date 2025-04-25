@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from 'react';
+import { capitalizeName } from '../../utils/formatUtils';
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import { useNavigate } from "react-router-dom";
@@ -193,7 +194,7 @@ const AvailableSlots = () => {
           className="interviewer-name-link"
           title="View LinkedIn Profile"
         >
-          {interviewer.name}{" "}
+          {capitalizeName(interviewer.name)}{" "}
           <img
             src="/linkedin-icon.png"
             alt="LinkedIn"
@@ -202,7 +203,7 @@ const AvailableSlots = () => {
         </a>
       );
     }
-    return interviewer.name;
+    return capitalizeName(interviewer.name);
   };
 
   // Helper function to validate URLs
@@ -278,7 +279,7 @@ const AvailableSlots = () => {
             <option value="">All Interviewers</option>
             {interviewers.map((interviewer) => (
               <option key={interviewer.id} value={interviewer.id}>
-                {interviewer.name}
+                {capitalizeName(interviewer.name)}
               </option>
             ))}
           </select>
