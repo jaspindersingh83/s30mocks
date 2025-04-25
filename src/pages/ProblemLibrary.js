@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api   from '../api';
 import { toast } from 'react-toastify';
 import AuthContext from '../context/AuthContext';
 import ProblemDetails from '../components/problems/ProblemDetails';
@@ -37,7 +37,7 @@ const ProblemLibrary = () => {
       setLoadingProblems(true);
       setError('');
       
-      const res = await axios.get('/api/problems');
+      const res = await api.get('/api/problems');
       setProblems(res.data);
       
       // If no problem is selected and we have problems, select the first one

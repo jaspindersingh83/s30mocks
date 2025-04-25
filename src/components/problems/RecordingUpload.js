@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 
 const RecordingUpload = ({ interviewId, onRecordingUploaded }) => {
   const [recordingUrl, setRecordingUrl] = useState('');
