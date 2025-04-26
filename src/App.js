@@ -159,7 +159,15 @@ function App() {
               />
 
               {/* Payment Routes */}
-              {/* Route for post-interview payments removed - all payments are now pre-booking */}
+              {/* Route for post-interview payments */}
+              <Route
+                path="/payments/:interviewId"
+                element={
+                  <ProtectedRoute>
+                    <UpiPayment />
+                  </ProtectedRoute>
+                }
+              />
 
               <Route
                 path="/payments/setup"
