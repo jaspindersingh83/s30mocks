@@ -232,10 +232,17 @@ const Interviews = () => {
   const handleUpdateMeeting = async (interviewId) => {
     try {
       setUpdatingMeeting(true);
-      await api.put(`/api/interviews/${interviewId}/meeting`, {
+      const response = await api.put(`/api/interviews/${interviewId}/meeting`, {
         meetingLink
       });
-      toast.success('Meeting link updated successfully');
+      
+      // Check if notification was sent to the candidate
+      if (response.data.notificationSent) {
+        toast.success('Meeting link updated successfully. Candidate has been notified.');
+      } else {
+        toast.success('Meeting link updated successfully');
+      }
+      
       fetchInterviews();
       setEditingMeeting(null);
     } catch (error) {
@@ -433,12 +440,25 @@ const Interviews = () => {
                       <>
                         {interview.meetingLink ? (
                           <div className="meeting-info">
-                            <div>
-                              <a href={interview.meetingLink} target="_blank" rel="noopener noreferrer">
-                                {interview.meetingLink}
+                            <div className="meeting-link-container">
+                              {getMeetingPlatform(interview.meetingLink) === 'google' && (
+                                <span className="meeting-icon google-meet">
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                                    <path fill="#4285F4" d="M22 11v2h-2v-2h2zm-4 0v2h-3v3h-2v-3h-3v-2h3V8h2v3h3zm-13 5v-2H3v-2h2V9H3V7h4v9H5zm17.3-6.2l.7-1.7-1.7-.7-.7 1.7 1.7.7zm-16.9.7L4.7 9l-1.7.7.7 1.7 1.7-.7z"/>
+                                  </svg>
+                                </span>
+                              )}
+                              {getMeetingPlatform(interview.meetingLink) === 'zoom' && (
+                                <span className="meeting-icon zoom">
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                                    <path fill="#2D8CFF" d="M16 7h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-3v-2h2V9h-2V7zm-5 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm-5-5v2H4v2H2V9h2v2h2V9h2v2h-2z"/>
+                                  </svg>
+                                </span>
+                              )}
+                              <a href={interview.meetingLink} target="_blank" rel="noopener noreferrer" className="meeting-link">
+                                {interview.meetingLink.replace(/^https?:\/\//, '')}
                               </a>
                             </div>
-
                           </div>
                         ) : (
                           <span className="no-meeting">Meeting link will be provided by the interviewer</span>
@@ -458,6 +478,9 @@ const Interviews = () => {
                                 onChange={(e) => setMeetingLink(e.target.value)}
                                 className="meeting-input"
                               />
+                              <small className="form-text text-muted">
+                                Updating this link will automatically notify the candidate via email.
+                              </small>
                             </div>
 
                             <div className="form-actions">
@@ -466,7 +489,7 @@ const Interviews = () => {
                                 onClick={() => handleUpdateMeeting(interview._id)}
                                 disabled={updatingMeeting}
                               >
-                                {updatingMeeting ? 'Saving...' : 'Save'}
+                                {updatingMeeting ? 'Saving...' : 'Save & Notify Candidate'}
                               </button>
                               <button
                                 className="btn-secondary"
@@ -480,40 +503,47 @@ const Interviews = () => {
                         ) : (
                           <div className="meeting-info">
                             {interview.meetingLink ? (
-                              <>
-                                <a href={interview.meetingLink} target="_blank" rel="noopener noreferrer" className="meeting-link">
-                                  {getMeetingPlatform(interview.meetingLink) === 'google' && (
-                                    <span className="meeting-icon google-meet">
-                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
-                                        <path fill="#4285F4" d="M22 11v2h-2v-2h2zm-4 0v2h-3v3h-2v-3h-3v-2h3V8h2v3h3zm-13 5v-2H3v-2h2V9H3V7h4v9H5zm17.3-6.2l.7-1.7-1.7-.7-.7 1.7 1.7.7zm-16.9.7L4.7 9l-1.7.7.7 1.7 1.7-.7z"/>
-                                      </svg>
-                                    </span>
-                                  )}
-                                  {getMeetingPlatform(interview.meetingLink) === 'zoom' && (
-                                    <span className="meeting-icon zoom">
-                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
-                                        <path fill="#2D8CFF" d="M16 7h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-3v-2h2V9h-2V7zm-5 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm-5-5v2H4v2H2V9h2v2h2V9h2v2h-2z"/>
-                                      </svg>
-                                    </span>
-                                  )}
-                                  {getMeetingPlatform(interview.meetingLink) === 'other' && (
-                                    <span className="meeting-icon other">
-                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
-                                        <path fill="#555" d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/>
-                                      </svg>
-                                    </span>
-                                  )}
-                                  {interview.meetingLink.replace(/^https?:\/\//, '')}
-                                </a>
-
-                                <button
-                                  className="btn-secondary btn-sm"
-                                  onClick={() => handleEditMeeting(interview)}
-                                  style={{ marginLeft: '8px' }}
-                                >
-                                  Edit
-                                </button>
-                              </>
+                              <div className="meeting-link-wrapper">
+                                <div className="meeting-link-display">
+                                  <a href={interview.meetingLink} target="_blank" rel="noopener noreferrer" className="meeting-link">
+                                    {getMeetingPlatform(interview.meetingLink) === 'google' && (
+                                      <span className="meeting-icon google-meet">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                                          <path fill="#4285F4" d="M22 11v2h-2v-2h2zm-4 0v2h-3v3h-2v-3h-3v-2h3V8h2v3h3zm-13 5v-2H3v-2h2V9H3V7h4v9H5zm17.3-6.2l.7-1.7-1.7-.7-.7 1.7 1.7.7zm-16.9.7L4.7 9l-1.7.7.7 1.7 1.7-.7z"/>
+                                        </svg>
+                                      </span>
+                                    )}
+                                    {getMeetingPlatform(interview.meetingLink) === 'zoom' && (
+                                      <span className="meeting-icon zoom">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                                          <path fill="#2D8CFF" d="M16 7h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-3v-2h2V9h-2V7zm-5 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm-5-5v2H4v2H2V9h2v2h2V9h2v2h-2z"/>
+                                        </svg>
+                                      </span>
+                                    )}
+                                    {getMeetingPlatform(interview.meetingLink) === 'other' && (
+                                      <span className="meeting-icon other">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                                          <path fill="#555" d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z"/>
+                                        </svg>
+                                      </span>
+                                    )}
+                                    {interview.meetingLink.replace(/^https?:\/\//, '')}
+                                  </a>
+                                </div>
+                                <div className="meeting-actions">
+                                  <button
+                                    className="btn-warning btn-sm"
+                                    onClick={() => handleEditMeeting(interview)}
+                                    title="Update meeting link if technical issues occur"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                    Update Link
+                                  </button>
+                                </div>
+                              </div>
                             ) : (
                               <button
                                 className="btn-primary"

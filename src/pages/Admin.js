@@ -7,6 +7,7 @@ import InterviewManagement from '../components/admin/InterviewManagement';
 import ProblemManagement from '../components/admin/ProblemManagement';
 import RatingManagement from '../components/admin/RatingManagement';
 import PaymentManagement from '../components/admin/PaymentManagement';
+import FeedbackManagement from '../components/admin/FeedbackManagement';
 import './Admin.css';
 
 const Admin = () => {
@@ -63,6 +64,12 @@ const Admin = () => {
         >
           Payment Management
         </button>
+        <button 
+          className={`tab-button ${activeTab === 'feedback' ? 'active' : ''}`}
+          onClick={() => setActiveTab('feedback')}
+        >
+          Feedback Management
+        </button>
       </div>
       
       <div className="admin-content">
@@ -72,6 +79,7 @@ const Admin = () => {
         {activeTab === 'problems' && <ProblemManagement />}
         {activeTab === 'ratings' && <RatingManagement />}
         {activeTab === 'payments' && <PaymentManagement />}
+        {activeTab === 'feedback' && <FeedbackManagement />}
       </div>
     </div>
   );
