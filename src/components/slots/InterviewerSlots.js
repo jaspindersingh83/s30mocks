@@ -176,19 +176,46 @@ const InterviewerSlots = () => {
         // Convert 0 (Sunday) to 7 for Luxon
         const luxonDayOfWeek = dayOfWeekInt === 0 ? 7 : dayOfWeekInt;
         
-        // Calculate days until next occurrence of selected day
-        let daysUntil = (luxonDayOfWeek - now.weekday + 7) % 7;
-        if (daysUntil === 0 && now.hour >= hourInt) {
-          daysUntil = 7; // If today is the day but hour has passed, go to next week
+        // Get the current day in the interviewer's timezone
+        const currentDay = now.weekday;
+        
+        // Create a date object for the selected day of the week
+        // We'll start by finding the next occurrence of this day
+        let targetDate;
+        
+        if (luxonDayOfWeek === currentDay) {
+          // If the selected day is today, use today's date but check if the hour has passed
+          if (now.hour >= hourInt) {
+            // If the hour has passed, schedule for next week
+            targetDate = now.plus({ weeks: 1 });
+          } else {
+            // Otherwise use today
+            targetDate = now;
+          }
+        } else if (luxonDayOfWeek > currentDay) {
+          // If the selected day is later this week
+          const daysToAdd = luxonDayOfWeek - currentDay;
+          targetDate = now.plus({ days: daysToAdd });
+        } else {
+          // If the selected day is earlier in the week, go to next week
+          const daysToAdd = 7 - (currentDay - luxonDayOfWeek);
+          targetDate = now.plus({ days: daysToAdd });
         }
         
-        // Create the date for the first slot
-        let slotDate = now.plus({ days: daysUntil }).set({ 
+        // Create the date for the first slot with the correct day and hour
+        let slotDate = targetDate.set({ 
           hour: hourInt, 
           minute: 0, 
           second: 0, 
           millisecond: 0 
         });
+        
+        // Check if the first slot is at least 24 hours in the future
+        const minAllowedTime = now.plus({ hours: 24 });
+        if (slotDate < minAllowedTime) {
+          toast.error("Slots must be at least 24 hours in the future");
+          return;
+        }
         
         // Create slots for the specified number of weeks
         for (let i = 0; i < recurringWeeks; i++) {
@@ -227,9 +254,10 @@ const InterviewerSlots = () => {
         // Convert to Luxon DateTime
         let slotDate = DateTime.fromJSDate(localDate).setZone(timezone);
         
-        // Ensure it's in the future
-        if (slotDate <= now) {
-          toast.error("Start time must be in the future");
+        // Ensure it's at least 24 hours in the future
+        const minAllowedTime = now.plus({ hours: 24 });
+        if (slotDate < minAllowedTime) {
+          toast.error("Slots must be at least 24 hours in the future");
           return;
         }
         
@@ -295,9 +323,9 @@ const InterviewerSlots = () => {
     <div className="slots-container">
       <h2>Manage Your Interview Slots</h2>
 
-      <div className="meeting-link-container">
+      <div className="interviewer-meeting-container">
         <div className="meeting-link-header">
-          <h3>Default Meeting Link</h3>
+         <h3>Default Meeting Link</h3> 
           <button
             type="button"
             className="btn-link"
@@ -331,9 +359,11 @@ const InterviewerSlots = () => {
                 changed
               </p>
             </div>
-            <button type="submit" className="btn-primary">
-              Save Meeting Link
-            </button>
+            <div className="form-group" style={{ marginTop: '15px' }}>
+              <button type="submit" className="btn-primary">
+                Save Meeting Link
+              </button>
+            </div>
           </form>
         ) : defaultMeetingLink ? (
           <div className="current-meeting-link">
@@ -354,10 +384,10 @@ const InterviewerSlots = () => {
             </p>
           </div>
         ) : (
-          <p className="no-meeting-link-message">
-            You haven't set up a default meeting link yet. Setting up a default
-            link will automatically use it for all your interviews.
-          </p>
+          <div className="no-meeting-link-message">
+            <p>You haven't set up a default meeting link yet.</p>
+            <p>Setting up a default link will automatically use it for all your interviews.</p>
+          </div>
         )}
       </div>
 
